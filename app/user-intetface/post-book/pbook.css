@@ -1,0 +1,158 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Times New Roman', Times, serif;
+  margin: 0;
+  padding: 0;
+}
+
+.post-finding-page {
+  min-height: 100vh;
+  background: #5c5b5b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 48px;
+}
+
+.post-finding-header {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border: 1px solid#c7d3e0;
+  padding: 12px 20px;
+  border-radius: 4px 4px 0 0;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.1rem;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.brand-icon {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+}
+
+.post-finding-content {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border: 1px solid #c7d3e0;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding: 24px 32px 40px;
+}
+
+.post-finding-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.form-section h2 {
+  font-size: 1.1rem;
+  color: #1f2933;
+  margin-bottom: 12px;
+}
+
+.photo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px dashed #8ad5ef;
+  background: #b9edff;
+  color: #337f;
+  font-size: 1.2rem;
+  gap: 12px;
+  padding: 28px;
+  cursor: pointer;
+}
+
+.photo-icon {
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-section input,
+.form-section select,
+.form-section textarea {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: #b9edff;
+  color: #2c3e50;
+  font-size: 1.05rem;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  outline: none;
+  appearance: none;
+}
+
+.input-prefix {
+  position: relative;
+  width: 100%;
+}
+
+.input-prefix span {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  color: #305266;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.input-prefix input {
+  padding-left: 42px;
+}
+
+.form-section select {
+  background-image: linear-gradient(45deg, transparent 50%, #4a5b6b 50%),
+    linear-gradient(135deg, #4a5b6b 50%, transparent 50%);
+  background-position: calc(100% - 20px) calc(50% - 3px),
+    calc(100% - 15px) calc(50% - 3px);
+  background-size: 7px 7px, 7px 7px;
+  background-repeat: no-repeat;
+}
+
+.form-section textarea {
+  resize: vertical;
+}
+
+.submit-btn {
+  align-self: flex-start;
+  background: #219dce;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: #1a7aa1;
+}
+
+@media (max-width: 600px) {
+  .post-finding-content {
+    padding: 20px;
+  }
+
+  .post-finding-page {
+    padding: 16px;
+  }
+}
+
