@@ -3,15 +3,18 @@
 import './login.css'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log({ email, password })
-    alert('Login clicked (backend later)')
+    // Redirect to user interface home page
+    router.push('/user-intetface/home')
   }
 
   return (
