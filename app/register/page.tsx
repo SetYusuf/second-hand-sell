@@ -3,23 +3,51 @@
 import './register.css'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
+  const router = useRouter()
+  const [id, setId] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
+    setLoading(true)
 
     if (password !== confirmPassword) {
-      alert('Passwords do not match')
+      setError('Passwords do not match')
+      setLoading(false)
       return
     }
 
-    console.log({ name, email, password })
-    alert('Register clicked (backend later)')
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, name, email, password }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        alert('Registration successful! Please login.')
+        router.push('/login')
+      } else {
+        setError(data.error || 'Registration failed')
+      }
+    } catch (err) {
+      setError('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -28,12 +56,28 @@ export default function RegisterPage() {
         <h2>Register</h2>
         <p className="subtitle">Create your account</p>
 
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+
+        <input
+          type="text"
+          placeholder="User ID"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          required
+          disabled={loading}
+        />
+
         <input
           type="text"
           placeholder="Full Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          disabled={loading}
         />
 
         <input
@@ -42,6 +86,7 @@ export default function RegisterPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          disabled={loading}
         />
 
         <input
@@ -50,6 +95,7 @@ export default function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          disabled={loading}
         />
 
         <input
@@ -58,9 +104,12 @@ export default function RegisterPage() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
+          disabled={loading}
         />
 
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </button>
 
         <p className="login-text">
           Already have an account? <Link href="/login">Login</Link>

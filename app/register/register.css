@@ -40,6 +40,8 @@
   border-radius: 8px;
   border: 1px solid #d1d5db;
   font-size: 14px;
+  color: #000000;
+  background-color: #ffffff;
 }
 
 .register-box input:focus {
@@ -63,6 +65,17 @@
 
 .register-box button:hover {
   background: #15803d;
+}
+
+/* Error message */
+.error-message {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #fecaca;
 }
 
 /* Login text */
