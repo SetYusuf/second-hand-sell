@@ -14,6 +14,11 @@ function HomeContent() {
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showPostCategories, setShowPostCategories] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [hasNewChatMessage, setHasNewChatMessage] = useState(true);
+  const [hasNewNotification, setHasNewNotification] = useState(true);
   const searchParams = useSearchParams();
   const rawCategory = searchParams.get('category')?.toLowerCase() || '';
   const selectedCategory = rawCategory;
@@ -314,6 +319,22 @@ function HomeContent() {
     setLangDropdown(!langDropdown);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const goToChat = () => {
+    setHasNewChatMessage(false);
+    setShowChatModal(false);
+    router.push('/user-intetface/chat');
+  };
+
+  const goToNotifications = () => {
+    setHasNewNotification(false);
+    setShowNotificationModal(false);
+    router.push('/user-intetface/notification');
+  };
+
   const switchLanguage = (lang: 'eng' | 'cam') => {
     setCurrentLang(lang);
     setLangDropdown(false);
@@ -395,8 +416,8 @@ function HomeContent() {
 
   return (
     <>
-      {/* Top Navbar */}
-      <div className="topbar">
+      {/* Desktop Navigation */}
+      <div className="desktop-nav">
         <header className="navbar">
           <div className="icon">
             <Image
@@ -489,14 +510,28 @@ function HomeContent() {
                 </button>
               </li>
               <li>
-                <Link href="/user-intetface/chat" aria-label="Messages" title="Messages">
+                <button 
+                  onClick={() => setShowChatModal(true)}
+                  className="chat-btn"
+                  aria-label="Messages" 
+                  title="Messages"
+                  type="button"
+                >
                   <i className="fa fa-comments"></i>
-                </Link>
+                  {hasNewChatMessage && <span className="chat-notification-dot"></span>}
+                </button>
               </li>
               <li>
-                <Link href="/user-intetface/notification" aria-label="Notifications" title="Notifications">
+                <button 
+                  onClick={() => setShowNotificationModal(true)}
+                  className="notification-btn"
+                  aria-label="Notifications" 
+                  title="Notifications"
+                  type="button"
+                >
                   <i className="fa fa-bell"></i>
-                </Link>
+                  {hasNewNotification && <span className="notification-badge-dot"></span>}
+                </button>
               </li>
               <li>
                 <Link href="/login" aria-label="Login" title="Login">
@@ -506,6 +541,184 @@ function HomeContent() {
             </ul>
           </nav>
         </header>
+      </div>
+
+      {/* Mobile Navigation */}
+      <div className="mobile-nav">
+        <header className="mobile-header">
+          <Image
+            src="/home/lg.png"
+            alt="Finding Product Logo"
+            className="mobile-logo"
+            width={160}
+            height={50}
+          />
+          <button 
+            className="hamburger-menu" 
+            onClick={toggleMobileMenu}
+            aria-label="Menu"
+            type="button"
+          >
+            <div className="hamburger-line"></div>
+            <div className="hamburger-line"></div>
+            <div className="hamburger-line"></div>
+          </button>
+        </header>
+
+        {/* Mobile Search Bar */}
+        <div className="mobile-search-section">
+          <form className="mobile-search" onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="mobile-srch"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="mobile-cancel-btn"
+                onClick={handleClearSearch}
+                aria-label="Cancel"
+              >
+                &times;
+              </button>
+            )}
+            <button type="submit" className="mobile-search-icon" aria-label="Search">
+              <i className="fa fa-search"></i>
+            </button>
+          </form>
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        <div className={`mobile-menu-dropdown ${isMobileMenuOpen ? 'open' : ''}`}>
+          <div className="mobile-menu-header">
+            <Image
+              src="/home/lg.png"
+              alt="Finding Product Logo"
+              className="mobile-menu-logo"
+              width={120}
+              height={40}
+            />
+            <button 
+              className="close-menu" 
+              onClick={toggleMobileMenu}
+              aria-label="Close menu"
+              type="button"
+            >
+              <i className="fa fa-times"></i>
+            </button>
+          </div>
+
+          <div className="mobile-menu-items">
+            <button 
+              className="mobile-menu-item"
+              onClick={() => {
+                toggleLangDropdown();
+              }}
+              type="button"
+            >
+              <i className="fa fa-globe"></i>
+              <span>Language</span>
+              <i className="fa fa-chevron-right"></i>
+            </button>
+
+            {langDropdown && (
+              <div className="mobile-lang-options">
+                <button
+                  className="mobile-lang-option"
+                  onClick={() => {
+                    switchLanguage('cam');
+                    setLangDropdown(false);
+                  }}
+                  type="button"
+                >
+                  <Image src="/home/cam.png" alt="Khmer" width={20} height={20} />
+                  <span>ខ្មែរ</span>
+                </button>
+                <button
+                  className="mobile-lang-option"
+                  onClick={() => {
+                    switchLanguage('eng');
+                    setLangDropdown(false);
+                  }}
+                  type="button"
+                >
+                  <Image src="/home/eng.png" alt="English" width={20} height={20} />
+                  <span>English</span>
+                </button>
+              </div>
+            )}
+
+            <Link href="/user-intetface/home" className="mobile-menu-item">
+              <i className="fa fa-home"></i>
+              <span>Home</span>
+              <i className="fa fa-chevron-right"></i>
+            </Link>
+
+            <Link href="#" className="mobile-menu-item">
+              <i className="fa fa-heart"></i>
+              <span>Favorites</span>
+              <i className="fa fa-chevron-right"></i>
+            </Link>
+
+            <button 
+              className="mobile-menu-item mobile-post-btn"
+              onClick={() => {
+                setShowPostCategories(true);
+                setIsMobileMenuOpen(false);
+              }}
+              type="button"
+            >
+              <i className="fa fa-plus"></i>
+              <span>POST</span>
+              <i className="fa fa-chevron-right"></i>
+            </button>
+
+            <button 
+              className="mobile-menu-item"
+              onClick={() => {
+                setShowChatModal(true);
+                setIsMobileMenuOpen(false);
+              }}
+              type="button"
+            >
+              <i className="fa fa-comments"></i>
+              <span>Messages</span>
+              {hasNewChatMessage && <span className="notification-badge">•</span>}
+              <i className="fa fa-chevron-right"></i>
+            </button>
+
+            <button 
+              className="mobile-menu-item"
+              onClick={() => {
+                setShowNotificationModal(true);
+                setIsMobileMenuOpen(false);
+              }}
+              type="button"
+            >
+              <i className="fa fa-bell"></i>
+              <span>Notifications</span>
+              {hasNewNotification && <span className="notification-badge">•</span>}
+              <i className="fa fa-chevron-right"></i>
+            </button>
+
+            <Link href="/login" className="mobile-menu-item">
+              <i className="fa fa-user"></i>
+              <span>Profile</span>
+              <i className="fa fa-chevron-right"></i>
+            </Link>
+          </div>
+        </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="mobile-menu-overlay"
+            onClick={toggleMobileMenu}
+          ></div>
+        )}
       </div>
 
 
@@ -751,6 +964,114 @@ function HomeContent() {
                 />
                 <p>Service</p>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Modal */}
+      {showChatModal && (
+        <div className="modal-overlay" onClick={() => setShowChatModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Messages</h3>
+              <button 
+                className="modal-close-btn"
+                onClick={() => setShowChatModal(false)}
+                aria-label="Close"
+              >
+                <i className="fa fa-times"></i>
+              </button>
+            </div>
+            <div className="modal-body">
+              {hasNewChatMessage ? (
+                <div className="chat-message-preview">
+                  <div className="message-item" onClick={goToChat}>
+                    <div className="message-avatar">
+                      <i className="fa fa-user-circle"></i>
+                    </div>
+                    <div className="message-content">
+                      <div className="message-header">
+                        <span className="sender-name">John Doe</span>
+                        <span className="message-time">2 min ago</span>
+                      </div>
+                      <div className="message-text">
+                        Hi! Is this item still available?
+                      </div>
+                    </div>
+                    <div className="message-indicator">
+                      <span className="new-message-dot"></span>
+                    </div>
+                  </div>
+                  <button 
+                    className="go-to-chat-btn"
+                    onClick={goToChat}
+                  >
+                    <i className="fa fa-comments"></i>
+                    Go to Chat
+                  </button>
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <i className="fa fa-comments"></i>
+                  <p>No new messages</p>
+                  <p>Your conversations will appear here</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification Modal */}
+      {showNotificationModal && (
+        <div className="modal-overlay" onClick={() => setShowNotificationModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Notifications</h3>
+              <button 
+                className="modal-close-btn"
+                onClick={() => setShowNotificationModal(false)}
+                aria-label="Close"
+              >
+                <i className="fa fa-times"></i>
+              </button>
+            </div>
+            <div className="modal-body">
+              {hasNewNotification ? (
+                <div className="notification-preview">
+                  <div className="notification-item" onClick={goToNotifications}>
+                    <div className="notification-avatar">
+                      <i className="fa fa-shopping-cart"></i>
+                    </div>
+                    <div className="notification-content">
+                      <div className="notification-header">
+                        <span className="sender-name">Purchase Successful!</span>
+                        <span className="message-time">1 hour ago</span>
+                      </div>
+                      <div className="message-text">
+                        Your order for "iPhone 13 Pro" has been confirmed
+                      </div>
+                    </div>
+                    <div className="notification-indicator">
+                      <span className="new-message-dot"></span>
+                    </div>
+                  </div>
+                  <button 
+                    className="go-to-notification-btn"
+                    onClick={goToNotifications}
+                  >
+                    <i className="fa fa-bell"></i>
+                    View All Notifications
+                  </button>
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <i className="fa fa-bell"></i>
+                  <p>No new notifications</p>
+                  <p>You're all caught up!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
