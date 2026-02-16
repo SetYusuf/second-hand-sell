@@ -12,41 +12,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        // Store user info in localStorage or context
-        localStorage.setItem('user', JSON.stringify(data.user))
-        // Redirect based on user role
-        if (data.user.role === 'admin') {
-          router.push('/dashboardadmin')
-        } else if (data.user.role === 'owner') {
-          router.push('/dashboardowner')
-        } else {
-          router.push('/user-intetface/home')
-        }
-      } else {
-        setError(data.error || 'Login failed')
-      }
-    } catch (err) {
-      setError('Network error. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    console.log({ email, password })
+    // Save user email to localStorage for profile page
+    localStorage.setItem('userEmail', email);
+    // Redirect to user interface home page
+    router.push('/user-intetface/home')
   }
 
   return (

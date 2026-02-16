@@ -38,6 +38,8 @@ export default function RegisterPage() {
       const data = await response.json()
 
       if (response.ok) {
+        // Save user email for profile page
+        localStorage.setItem('userEmail', email);
         alert('Registration successful! Please login.')
         router.push('/login')
       } else {

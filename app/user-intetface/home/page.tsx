@@ -19,9 +19,52 @@ function HomeContent() {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [hasNewChatMessage, setHasNewChatMessage] = useState(true);
   const [hasNewNotification, setHasNewNotification] = useState(true);
+  const [customAvatar, setCustomAvatar] = useState<string>('');
   const searchParams = useSearchParams();
   const rawCategory = searchParams.get('category')?.toLowerCase() || '';
   const selectedCategory = rawCategory;
+
+  // Load custom avatar from localStorage
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem('customAvatar');
+    if (savedAvatar) {
+      setCustomAvatar(savedAvatar);
+    }
+  }, []);
+
+  // Listen for email changes and update profile button
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'userEmail') {
+        // Force re-render to update the first letter
+        setCustomAvatar(prev => prev); // This triggers a re-render
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Check for email changes periodically (for same-tab updates)
+  useEffect(() => {
+    const checkEmailChange = () => {
+      const currentEmail = localStorage.getItem('userEmail');
+      // Just trigger a re-render if email exists
+      if (currentEmail) {
+        setCustomAvatar(prev => prev);
+      }
+    };
+
+    const interval = setInterval(checkEmailChange, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Get user first letter for default avatar
+  const getUserFirstLetter = () => {
+    const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+    const userName = userEmail.split('@')[0];
+    return userName.charAt(0).toUpperCase();
+  };
 
   // Product data model and dataset
   interface Product {
@@ -534,8 +577,14 @@ function HomeContent() {
                 </button>
               </li>
               <li>
-                <Link href="/login" aria-label="Login" title="Login">
-                  <i className="fa fa-user"></i>
+                <Link href="/user-intetface/profile" aria-label="Profile" title="Profile" className="profile-link">
+                  {customAvatar ? (
+                    <Image src={customAvatar} alt="Profile" className="profile-nav-avatar" width={32} height={32} />
+                  ) : (
+                    <div className="profile-nav-letter">
+                      {getUserFirstLetter()}
+                    </div>
+                  )}
                 </Link>
               </li>
             </ul>
@@ -704,8 +753,14 @@ function HomeContent() {
               <i className="fa fa-chevron-right"></i>
             </button>
 
-            <Link href="/login" className="mobile-menu-item">
-              <i className="fa fa-user"></i>
+            <Link href="/user-intetface/profile" className="mobile-menu-item">
+              {customAvatar ? (
+                <Image src={customAvatar} alt="Profile" className="mobile-profile-avatar" width={24} height={24} />
+              ) : (
+                <div className="mobile-profile-letter">
+                  {getUserFirstLetter()}
+                </div>
+              )}
               <span>Profile</span>
               <i className="fa fa-chevron-right"></i>
             </Link>
