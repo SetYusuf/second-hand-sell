@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import './home.css';
+import NotificationDropdownEnhanced from './NotificationDropdownEnhanced';
+import ChatDropdownEnhanced from './ChatDropdownEnhanced';
 
 function HomeContent() {
   const router = useRouter();
@@ -73,6 +75,17 @@ function HomeContent() {
     description: string;
     price: string;
     image: string;
+  }
+
+  // Notification data model and dataset
+  interface NotificationItem {
+    id: number;
+    name: string;
+    text: string;
+    time: string;
+    avatar: string;
+    type: 'like' | 'friend_request' | 'friend_accepted' | 'post';
+    read?: boolean;
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -348,6 +361,34 @@ function HomeContent() {
     },
   ];
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const notifications: NotificationItem[] = [
+    { id: 0, name: 'Lina', text: 'like your post', time: '1mn', avatar: '/notification-image/lina.png', type: 'like' },
+    { id: 1, name: 'Bopa', text: 'Sent you a friend request', time: '5h', avatar: '/notification-image/bopa.png', type: 'friend_request' },
+    { id: 2, name: 'Leakna', text: 'accepted your friend request', time: '2d', avatar: '/notification-image/leakna.png', type: 'friend_accepted' },
+    { id: 3, name: 'Somnag', text: 'added new post', time: '23d', avatar: '/notification-image/somnang.png', type: 'post' },
+    { id: 4, name: 'Lina', text: 'like your post', time: '1mp', avatar: '/notification-image/lina.png', type: 'like' },
+  ];
+
+  // Chat data model and dataset
+  interface ChatItem {
+    id: number;
+    name: string;
+    preview: string;
+    time: string;
+    avatar: string;
+    unread?: boolean;
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const chats: ChatItem[] = [
+    { id: 0, name: 'Lina', preview: 'Hey bro, what are you doing? 😁', time: '11:45pm', avatar: '/notification-image/lina.png', unread: true },
+    { id: 1, name: 'Bopa', preview: 'Bro, I finally finished setting up my PC last …', time: 'Sun', avatar: '/notification-image/bopa.png', unread: true },
+    { id: 2, name: 'Leakna', preview: 'Thanks again for helping me with my assig…', time: '23 Oct', avatar: '/notification-image/leakna.png', unread: false },
+    { id: 3, name: 'Somnag', preview: 'Hey, random question — do you believe ever …', time: '29 Oct', avatar: '/notification-image/somnang.png', unread: false },
+    { id: 4, name: 'Lina', preview: 'Can we meet tomorrow morning?', time: '10:12am', avatar: '/notification-image/lina.png', unread: true },
+  ];
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
@@ -370,6 +411,12 @@ function HomeContent() {
     setHasNewChatMessage(false);
     setShowChatModal(false);
     router.push('/user-intetface/chat');
+  };
+
+  const goToSpecificChat = (chat: ChatItem) => {
+    setHasNewChatMessage(false);
+    setShowChatModal(false);
+    router.push(`/user-intetface/inside-chat?name=${encodeURIComponent(chat.name)}&avatar=${encodeURIComponent(chat.avatar)}&msg=${encodeURIComponent(chat.preview)}`);
   };
 
   const goToNotifications = () => {
@@ -917,21 +964,43 @@ function HomeContent() {
                 <h2>{product.title}</h2>
                 <p style={{ whiteSpace: 'pre-line' }}>{product.description}</p>
                 <div className="price">{  product.price}</div>
-                <button 
-                  className="product-btn"
-                  onClick={() => {
-                    const params = new URLSearchParams();
-                    params.set('title', product.title);
-                    params.set('price', product.price);
-                    params.set('desc', product.description);
-                    params.set('image', product.image);
-                    params.set('id', product.id.toString());
-                    router.push(`/user-intetface/buy-detail?${params.toString()}`);
-                  }}
-                  type="button"
-                >
-                  Buy Now
-                </button>
+                <div className="product-buttons">
+                  <button 
+                    className="product-btn primary-action"
+                    onClick={() => {
+                      const params = new URLSearchParams();
+                      params.set('category', product.title.toLowerCase());
+                      params.set('id', product.id.toString());
+                      router.push(`/user-intetface/buy-detail?${params.toString()}`);
+                    }}
+                    type="button"
+                  >
+                    <i className="fa fa-shopping-bag"></i>
+                    Buy Now
+                  </button>
+                  <button 
+                    className="product-btn secondary-action"
+                    onClick={() => {
+                      // Add to cart functionality or other action
+                      console.log('Added to cart:', product.title);
+                    }}
+                    type="button"
+                  >
+                    <i className="fa fa-cart-plus"></i>
+                    Add to Cart
+                  </button>
+                  <button 
+                    className="product-btn tertiary-action"
+                    onClick={() => {
+                      // Save to favorites functionality
+                      toggleFavorite(product.id);
+                    }}
+                    type="button"
+                  >
+                    <i className="fa fa-heart"></i>
+                    Save
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -1078,59 +1147,16 @@ function HomeContent() {
         </div>
       )}
 
-      {/* Notification Modal */}
-      {showNotificationModal && (
-        <div className="modal-overlay" onClick={() => setShowNotificationModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Notifications</h3>
-              <button 
-                className="modal-close-btn"
-                onClick={() => setShowNotificationModal(false)}
-                aria-label="Close"
-              >
-                <i className="fa fa-times"></i>
-              </button>
-            </div>
-            <div className="modal-body">
-              {hasNewNotification ? (
-                <div className="notification-preview">
-                  <div className="notification-item" onClick={goToNotifications}>
-                    <div className="notification-avatar">
-                      <i className="fa fa-shopping-cart"></i>
-                    </div>
-                    <div className="notification-content">
-                      <div className="notification-header">
-                        <span className="sender-name">Purchase Successful!</span>
-                        <span className="message-time">1 hour ago</span>
-                      </div>
-                      <div className="message-text">
-                        Your order for "iPhone 13 Pro" has been confirmed
-                      </div>
-                    </div>
-                    <div className="notification-indicator">
-                      <span className="new-message-dot"></span>
-                    </div>
-                  </div>
-                  <button 
-                    className="go-to-notification-btn"
-                    onClick={goToNotifications}
-                  >
-                    <i className="fa fa-bell"></i>
-                    View All Notifications
-                  </button>
-                </div>
-              ) : (
-                <div className="empty-state">
-                  <i className="fa fa-bell"></i>
-                  <p>No new notifications</p>
-                  <p>You're all caught up!</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Enhanced Notification Dropdown */}
+      <NotificationDropdownEnhanced
+        isOpen={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+        notifications={notifications}
+        onNotificationClick={(notification) => {
+          console.log('Notification clicked:', notification);
+          goToNotifications();
+        }}
+      />
     </>
   );
 }
