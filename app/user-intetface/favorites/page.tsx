@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import '../home/home.css';
 
 interface FavoriteProduct {
@@ -14,6 +15,7 @@ interface FavoriteProduct {
 }
 
 export default function FavoritesPage() {
+  const router = useRouter();
   const [favorites, setFavorites] = useState<FavoriteProduct[]>([]);
 
   useEffect(() => {
@@ -27,6 +29,17 @@ export default function FavoritesPage() {
       console.error('Failed to read favorite products from storage', error);
     }
   }, []);
+
+  const handleProductClick = (product: FavoriteProduct) => {
+    const params = new URLSearchParams();
+    params.set('title', product.title);
+    params.set('price', product.price);
+    params.set('desc', product.description);
+    params.set('image', product.image);
+    params.set('id', product.id.toString());
+    params.set('category', product.title.toLowerCase());
+    router.push(`/user-intetface/buy-detail?${params.toString()}`);
+  };
 
   const hasFavorites = favorites.length > 0;
 
@@ -84,7 +97,12 @@ export default function FavoritesPage() {
         {hasFavorites && (
           <div className="product-list-box">
             {favorites.map((product) => (
-              <div key={product.id} className="product-card">
+              <div 
+                key={product.id} 
+                className="product-card"
+                onClick={() => handleProductClick(product)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="product-image-container">
                   <Image
                     src={product.image}
