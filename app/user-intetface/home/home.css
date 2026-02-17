@@ -308,6 +308,50 @@ body {
     color: rgb(12,132,202);
 }
 
+/* Theme Toggle Button */
+.theme-toggle-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.theme-toggle-nav i {
+    font-size: 18px;
+    transition: color 0.15s ease;
+    color: #333;
+}
+
+.theme-toggle-nav:hover {
+    color: rgb(12,132,202);
+    background: rgba(12,132,202,0.08);
+    transform: translateY(-2px);
+}
+
+.theme-toggle-nav:hover i {
+    color: rgb(12,132,202);
+}
+
+/* Dark mode theme toggle */
+[data-theme="dark"] .theme-toggle-nav i {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .theme-toggle-nav:hover {
+    background: rgba(102, 126, 234, 0.2);
+}
+
+[data-theme="dark"] .theme-toggle-nav:hover i {
+    color: #667eea;
+}
+
 /* Profile Navigation Avatar */
 .profile-link {
     display: flex;

@@ -268,3 +268,56 @@
     color: #9ca3af;
   }
 }
+
+/* Theme-based dark mode */
+[data-theme="dark"] .login-container {
+  background: linear-gradient(135deg, #0f172a, #020617);
+}
+
+[data-theme="dark"] .login-box {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .login-box h2 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .subtitle {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .login-box input {
+  background: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .login-box input::placeholder {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .login-btn {
+  background: var(--button-primary);
+  border-color: var(--button-primary);
+}
+
+[data-theme="dark"] .login-btn:hover {
+  background: var(--button-primary-hover);
+  border-color: var(--button-primary-hover);
+}
+
+[data-theme="dark"] .register-text {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .register-text a {
+  color: var(--accent);
+}
+
+[data-theme="dark"] .error-message {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.2);
+}
