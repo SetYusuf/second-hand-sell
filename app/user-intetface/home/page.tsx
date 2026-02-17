@@ -63,6 +63,20 @@ function HomeContent() {
     return () => clearInterval(interval);
   }, []);
 
+  // Load saved favorite products from localStorage on first render
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('favoriteProducts');
+      if (stored) {
+        const parsed: Product[] = JSON.parse(stored);
+        const ids = new Set(parsed.map((p) => p.id));
+        setFavorites(ids);
+      }
+    } catch (error) {
+      console.error('Failed to load favorite products from storage', error);
+    }
+  }, []);
+
   // Get user first letter for default avatar
   const getUserFirstLetter = () => {
     const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
@@ -443,6 +457,15 @@ function HomeContent() {
         newFavorites.add(productId);
         console.log('Added to favorites');
       }
+
+      // Persist favorites to localStorage so they can be viewed later
+      try {
+        const favoriteProducts = products.filter((p) => newFavorites.has(p.id));
+        localStorage.setItem('favoriteProducts', JSON.stringify(favoriteProducts));
+      } catch (error) {
+        console.error('Failed to save favorite products to storage', error);
+      }
+
       return newFavorites;
     });
   };
@@ -560,7 +583,7 @@ function HomeContent() {
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </Link>
-            <Link href="#" className="favorite-nav" aria-label="Favorites" title="Favorites">
+            <Link href="/user-intetface/favorites" className="favorite-nav" aria-label="Favorites" title="Favorites">
               <i className="fa fa-heart"></i>
             </Link>
           </div>
@@ -766,7 +789,7 @@ function HomeContent() {
               <i className="fa fa-chevron-right"></i>
             </Link>
 
-            <Link href="#" className="mobile-menu-item">
+            <Link href="/user-intetface/favorites" className="mobile-menu-item">
               <i className="fa fa-heart"></i>
               <span>Favorites</span>
               <i className="fa fa-chevron-right"></i>
