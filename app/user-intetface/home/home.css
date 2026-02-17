@@ -15,8 +15,8 @@ html {
 
 body {
     padding-top: 0;
-    background-color: var(--background);
-    color: var(--text-secondary);
+    background-color: #ffffff;
+    color: #333333;
     overflow-y: auto;
     overflow-x: hidden;
     -ms-overflow-style: none; /* IE/Edge */
@@ -1805,7 +1805,14 @@ body {
   background: #ffffff;
   padding: 20px;
   border-radius: 50%;
-  transition: background-color 0.3s, transform 0.3s;
+  /* Blue circular ring around category icon */
+  border: 3px solid #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
+  transition:
+    background-color 0.3s,
+    transform 0.3s,
+    box-shadow 0.3s,
+    border-color 0.3s;
   object-fit: contain;
 }
 
