@@ -15,7 +15,8 @@ html {
 
 body {
     padding-top: 0;
-    background-color: #ffffff;
+    background-color: var(--background);
+    color: var(--text-secondary);
     overflow-y: auto;
     overflow-x: hidden;
     -ms-overflow-style: none; /* IE/Edge */
@@ -33,8 +34,8 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: var(--header-bg);
+    box-shadow: 0 2px 8px var(--shadow);
     z-index: 1000;
 }
 
@@ -2669,6 +2670,306 @@ body {
   .notification-dropdown-text {
     font-size: 13px;
   }
+}
+
+/* ===== Dark Theme Overrides ===== */
+[data-theme="dark"] .home-nav {
+    background: var(--nav-bg);
+}
+
+[data-theme="dark"] .home-nav a {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .home-nav a:hover {
+    color: var(--accent);
+}
+
+[data-theme="dark"] .profile-nav-letter,
+[data-theme="dark"] .mobile-profile-letter {
+    background: var(--accent);
+    color: white;
+}
+
+[data-theme="dark"] .lang-dropdown {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+[data-theme="dark"] .lang-option {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .lang-option:hover {
+    background: var(--button-secondary-hover);
+}
+
+[data-theme="dark"] .srch,
+[data-theme="dark"] .mobile-srch {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .srch:focus,
+[data-theme="dark"] .mobile-srch:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .srch::placeholder,
+[data-theme="dark"] .mobile-srch::placeholder {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .search-icon i,
+[data-theme="dark"] .mobile-search-icon i {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .hamburger-line {
+    background: var(--text-primary);
+}
+
+[data-theme="dark"] .hamburger-menu:hover {
+    background: var(--button-secondary-hover);
+}
+
+[data-theme="dark"] .mobile-search-icon {
+    background: var(--accent);
+}
+
+[data-theme="dark"] .mobile-search-icon:hover {
+    background: var(--accent-hover);
+}
+
+[data-theme="dark"] .mobile-cancel-btn {
+    color: var(--accent);
+}
+
+[data-theme="dark"] .mobile-cancel-btn:hover {
+    color: var(--accent-hover);
+}
+
+[data-theme="dark"] .mobile-menu-header {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+}
+
+[data-theme="dark"] .close-menu {
+    background: var(--button-secondary);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .close-menu:hover {
+    background: var(--button-secondary-hover);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .mobile-menu-item {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+}
+
+[data-theme="dark"] .mobile-menu-item:hover {
+    background: var(--button-secondary-hover);
+}
+
+[data-theme="dark"] .mobile-menu-item i:first-child {
+    color: var(--accent);
+}
+
+[data-theme="dark"] .mobile-menu-dropdown {
+    background: var(--card-bg);
+}
+
+[data-theme="dark"] .message-item,
+[data-theme="dark"] .notification-item {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .message-item:hover,
+[data-theme="dark"] .notification-item:hover {
+    background: var(--button-secondary-hover);
+}
+
+[data-theme="dark"] .message-avatar {
+    background: var(--button-secondary);
+}
+
+[data-theme="dark"] .message-avatar i {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .sender-name {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .message-time {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .message-text {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .go-to-chat-btn,
+[data-theme="dark"] .go-to-notification-btn {
+    background: var(--button-primary);
+}
+
+[data-theme="dark"] .go-to-chat-btn:hover,
+[data-theme="dark"] .go-to-notification-btn:hover {
+    background: var(--button-primary-hover);
+}
+
+[data-theme="dark"] .notification-avatar {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+/* Carousel and other components */
+[data-theme="dark"] .carousel-container {
+    background: var(--card-bg);
+}
+
+[data-theme="dark"] .carousel-slide {
+    background: var(--card-bg);
+}
+
+[data-theme="dark"] .product-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+}
+
+[data-theme="dark"] .product-card h3 {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .product-card p {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .favorite-btn {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .favorite-btn:hover {
+    color: #ef4444;
+}
+
+[data-theme="dark"] .favorite-btn.active {
+    color: #ef4444;
+}
+
+[data-theme="dark"] .buy-now-btn,
+[data-theme="dark"] .add-to-cart-btn,
+[data-theme="dark"] .save-btn {
+    background: var(--button-primary);
+    border-color: var(--button-primary);
+}
+
+[data-theme="dark"] .buy-now-btn:hover,
+[data-theme="dark"] .add-to-cart-btn:hover,
+[data-theme="dark"] .save-btn:hover {
+    background: var(--button-primary-hover);
+    border-color: var(--button-primary-hover);
+}
+
+[data-theme="dark"] .modal-overlay {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .modal-content {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-header {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+}
+
+[data-theme="dark"] .modal-close-btn {
+    background: var(--button-secondary);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .modal-close-btn:hover {
+    background: var(--button-secondary-hover);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .empty-state {
+    background: var(--card-bg);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .empty-state i {
+    color: var(--text-muted);
+}
+
+/* Notification dropdown dark theme */
+[data-theme="dark"] .notification-dropdown-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="dark"] .notification-dropdown-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .notification-dropdown-header {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+}
+
+[data-theme="dark"] .notification-dropdown-item {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+}
+
+[data-theme="dark"] .notification-dropdown-item:hover {
+    background: var(--button-secondary-hover);
+}
+
+[data-theme="dark"] .notification-dropdown-title {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .notification-dropdown-message {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .notification-dropdown-time {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .notification-friend-confirm,
+[data-theme="dark"] .notification-friend-delete {
+    background: var(--button-primary);
+    color: white;
+}
+
+[data-theme="dark"] .notification-friend-confirm:hover {
+    background: var(--button-primary-hover);
+}
+
+[data-theme="dark"] .notification-friend-delete {
+    background: var(--button-secondary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .notification-friend-delete:hover {
+    background: var(--button-secondary-hover);
 }
 
 
