@@ -49,6 +49,36 @@ body {
     height: 90px;
 }
 
+/* Theme toggle button in navbar */
+.theme-toggle-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.theme-toggle-nav i {
+    font-size: 18px;
+    transition: color 0.15s ease;
+}
+
+.theme-toggle-nav:hover {
+    color: rgb(12,132,202);
+    background: rgba(12,132,202,0.08);
+    transform: translateY(-2px);
+}
+
+.theme-toggle-nav:hover i {
+    color: rgb(12,132,202);
+}
+
 .icon {
     display: flex;
     align-items: center;

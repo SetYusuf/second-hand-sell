@@ -7,9 +7,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import './home.css';
 import NotificationDropdownEnhanced from './NotificationDropdownEnhanced';
 import ChatDropdownEnhanced from './ChatDropdownEnhanced';
+import { useTheme } from '../../contexts/ThemeContext';
 
 function HomeContent() {
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [langDropdown, setLangDropdown] = useState(false);
   const [currentLang, setCurrentLang] = useState('eng');
@@ -624,6 +626,17 @@ function HomeContent() {
                 </button>
               </li>
               <li>
+                <button
+                  onClick={toggleTheme}
+                  className="theme-toggle-nav"
+                  aria-label="Toggle theme"
+                  title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                  type="button"
+                >
+                  <i className={`fa ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`}></i>
+                </button>
+              </li>
+              <li>
                 <Link href="/user-intetface/profile" aria-label="Profile" title="Profile" className="profile-link">
                   {customAvatar ? (
                     <Image src={customAvatar} alt="Profile" className="profile-nav-avatar" width={32} height={32} />
@@ -797,6 +810,19 @@ function HomeContent() {
               <i className="fa fa-bell"></i>
               <span>Notifications</span>
               {hasNewNotification && <span className="notification-badge">•</span>}
+              <i className="fa fa-chevron-right"></i>
+            </button>
+
+            <button
+              className="mobile-menu-item"
+              onClick={() => {
+                toggleTheme();
+                setIsMobileMenuOpen(false);
+              }}
+              type="button"
+            >
+              <i className={`fa ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`}></i>
+              <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
               <i className="fa fa-chevron-right"></i>
             </button>
 

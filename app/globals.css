@@ -1,15 +1,90 @@
 @import "tailwindcss";
 
+/* ===== Color System & Theme Variables ===== */
 :root {
+  /* Base surface & text */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Surfaces */
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --header-bg: #ffffff;
+  --nav-bg: #ffffff;
+  --footer-bg: #f9fafb;
+
+  /* Text */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+
+  /* Accent / brand */
+  --accent: #4a90e2;
+  --accent-hover: #357abd;
+
+  /* Borders & inputs */
+  --border: #e5e7eb;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+
+  /* Buttons */
+  --button-primary: #4a90e2;
+  --button-primary-hover: #357abd;
+  --button-secondary: #f3f4f6;
+  --button-secondary-hover: #e5e7eb;
+
+  /* Misc */
+  --shadow: rgba(15, 23, 42, 0.12);
 }
 
+/* System preference when user hasn't chosen a theme yet */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --card-bg: #0f172a;
+    --card-border: #1f2937;
+    --header-bg: #020617;
+    --nav-bg: #020617;
+    --footer-bg: #020617;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --accent: #60a5fa;
+    --accent-hover: #3b82f6;
+    --border: #1f2937;
+    --input-bg: #020617;
+    --input-border: #1f2937;
+    --button-primary: #3b82f6;
+    --button-primary-hover: #2563eb;
+    --button-secondary: #020617;
+    --button-secondary-hover: #111827;
+    --shadow: rgba(0, 0, 0, 0.6);
   }
+}
+
+/* Explicit dark theme overrides – driven by ThemeProvider data-theme attribute */
+[data-theme="dark"] {
+  --background: #020617;
+  --foreground: #e5e7eb;
+  --card-bg: #020617;
+  --card-border: #1f2937;
+  --header-bg: #020617;
+  --nav-bg: #020617;
+  --footer-bg: #020617;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --accent: #60a5fa;
+  --accent-hover: #3b82f6;
+  --border: #1f2937;
+  --input-bg: #020617;
+  --input-border: #1f2937;
+  --button-primary: #3b82f6;
+  --button-primary-hover: #2563eb;
+  --button-secondary: #020617;
+  --button-secondary-hover: #111827;
+  --shadow: rgba(0, 0, 0, 0.7);
 }
 
 /* Global responsive styles */
@@ -35,6 +110,9 @@ body {
   padding: 0;
   min-height: 100vh;
   overflow-x: hidden;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 /* Responsive typography */

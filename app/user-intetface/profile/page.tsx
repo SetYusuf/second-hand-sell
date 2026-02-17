@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import './profile.css';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface UserProfile {
   name: string;
@@ -14,6 +15,7 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<UserProfile>({
     name: '',
@@ -174,6 +176,18 @@ export default function ProfilePage() {
     'avatar-7',
     'avatar-8'
   ];
+
+  const handleLightMode = () => {
+    if (theme !== 'light') {
+      setTheme('light');
+    }
+  };
+
+  const handleDarkMode = () => {
+    if (theme !== 'dark') {
+      setTheme('dark');
+    }
+  };
 
   return (
     <div className="profile-container">
@@ -367,6 +381,53 @@ export default function ProfilePage() {
               <small style={{ display: 'block', marginTop: '8px', color: '#666', fontSize: '12px' }}>
                 Custom avatar persists across email changes. New users see first letter by default.
               </small>
+            </div>
+          </div>
+
+          {/* Theme / Appearance settings */}
+          <div className="info-card theme-settings">
+            <h3>Appearance</h3>
+            <div className="theme-toggle-section">
+              <div className="theme-info">
+                <span className="theme-label">Theme Mode</span>
+                <span className="theme-description">
+                  {theme === 'light' ? 'Light mode is active' : 'Dark mode is active'}
+                </span>
+              </div>
+              <div className="theme-toggle-container">
+                <button
+                  className={`theme-toggle-btn ${theme === 'light' ? 'active' : ''}`}
+                  onClick={handleLightMode}
+                  aria-label="Switch to light mode"
+                  type="button"
+                >
+                  <i className="fa fa-sun"></i>
+                  Light
+                </button>
+                <button
+                  className={`theme-toggle-btn ${theme === 'dark' ? 'active' : ''}`}
+                  onClick={handleDarkMode}
+                  aria-label="Switch to dark mode"
+                  type="button"
+                >
+                  <i className="fa fa-moon"></i>
+                  Dark
+                </button>
+              </div>
+              <div className="theme-preview">
+                <div className="preview-light">
+                  <div className="preview-card light-preview">
+                    <i className="fa fa-sun"></i>
+                    <span>Light Mode</span>
+                  </div>
+                </div>
+                <div className="preview-dark">
+                  <div className="preview-card dark-preview">
+                    <i className="fa fa-moon"></i>
+                    <span>Dark Mode</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
