@@ -79,9 +79,12 @@ function HomeContent() {
 
   // Get user first letter for default avatar
   const getUserFirstLetter = () => {
-    const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
-    const userName = userEmail.split('@')[0];
-    return userName.charAt(0).toUpperCase();
+    if (typeof window !== 'undefined') {
+      const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+      const userName = userEmail.split('@')[0];
+      return userName.charAt(0).toUpperCase();
+    }
+    return 'U'; // Default fallback for server-side rendering
   };
 
   // Product data model and dataset
@@ -472,9 +475,9 @@ function HomeContent() {
 
   // Welcome banner images - placeholder paths 
   const welcomeImages = [
-    '/home/bann3.png', 
-    '/home/bann2.png', 
-    '/home/bann3.png', 
+    '/home/bann3.png',
+    '/home/bann2.png',
+    '/home/bann3.png',
     '/home/bann2.png',
   ];
 
@@ -520,14 +523,14 @@ function HomeContent() {
   const headingText = selectedCategory === 'computer'
     ? 'Computer'
     : selectedCategory === 'phone'
-    ? 'Phone'
-    : selectedCategory === 'product'
-    ? 'Product'
-    : selectedCategory === 'book'
-    ? 'Book'
-    : selectedCategory === 'service'
-    ? 'Service'
-    : 'Product, Computer, Phone, Book, Service';
+      ? 'Phone'
+      : selectedCategory === 'product'
+        ? 'Product'
+        : selectedCategory === 'book'
+          ? 'Book'
+          : selectedCategory === 'service'
+            ? 'Service'
+            : 'Product, Computer, Phone, Book, Service';
 
   return (
     <>
@@ -616,7 +619,7 @@ function HomeContent() {
           <nav className="navbar-menu">
             <ul>
               <li className="sell">
-                <button 
+                <button
                   onClick={() => setShowPostCategories(true)}
                   className="sell-inline"
                   type="button"
@@ -625,10 +628,10 @@ function HomeContent() {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => setShowChatModal(true)}
                   className="chat-btn"
-                  aria-label="Messages" 
+                  aria-label="Messages"
                   title="Messages"
                   type="button"
                 >
@@ -637,10 +640,10 @@ function HomeContent() {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => setShowNotificationModal(true)}
                   className="notification-btn"
-                  aria-label="Notifications" 
+                  aria-label="Notifications"
                   title="Notifications"
                   type="button"
                 >
@@ -685,8 +688,8 @@ function HomeContent() {
             width={160}
             height={50}
           />
-          <button 
-            className="hamburger-menu" 
+          <button
+            className="hamburger-menu"
             onClick={toggleMobileMenu}
             aria-label="Menu"
             type="button"
@@ -733,8 +736,8 @@ function HomeContent() {
               width={120}
               height={40}
             />
-            <button 
-              className="close-menu" 
+            <button
+              className="close-menu"
               onClick={toggleMobileMenu}
               aria-label="Close menu"
               type="button"
@@ -744,7 +747,7 @@ function HomeContent() {
           </div>
 
           <div className="mobile-menu-items">
-            <button 
+            <button
               className="mobile-menu-item"
               onClick={() => {
                 toggleLangDropdown();
@@ -795,7 +798,7 @@ function HomeContent() {
               <i className="fa fa-chevron-right"></i>
             </Link>
 
-            <button 
+            <button
               className="mobile-menu-item mobile-post-btn"
               onClick={() => {
                 setShowPostCategories(true);
@@ -808,7 +811,7 @@ function HomeContent() {
               <i className="fa fa-chevron-right"></i>
             </button>
 
-            <button 
+            <button
               className="mobile-menu-item"
               onClick={() => {
                 setShowChatModal(true);
@@ -822,7 +825,7 @@ function HomeContent() {
               <i className="fa fa-chevron-right"></i>
             </button>
 
-            <button 
+            <button
               className="mobile-menu-item"
               onClick={() => {
                 setShowNotificationModal(true);
@@ -865,7 +868,7 @@ function HomeContent() {
 
         {/* Mobile Menu Overlay */}
         {isMobileMenuOpen && (
-          <div 
+          <div
             className="mobile-menu-overlay"
             onClick={toggleMobileMenu}
           ></div>
@@ -886,55 +889,55 @@ function HomeContent() {
           <p>Book</p>
         </div>
         <div className="category" onClick={() => router.push('/user-intetface/home?category=computer')}>
-         <Image src="/home/computer.png" 
-         alt="Computer"
-         className="category-icon" 
-         width={100} 
-         height={100} />
+          <Image src="/home/computer.png"
+            alt="Computer"
+            className="category-icon"
+            width={100}
+            height={100} />
           <p>Computer</p>
         </div>
         <div className="category" onClick={() => router.push('/user-intetface/home?category=phone')}>
           <Image src="/home/phone.png"
-          alt="Phone" 
-          className="category-icon" 
-          width={100} 
-          height={100} />
+            alt="Phone"
+            className="category-icon"
+            width={100}
+            height={100} />
           <p>Phone</p>
-        </div>  
+        </div>
         <div className="category" onClick={() => router.push('/user-intetface/home?category=product')}>
-          <Image src="/home/electronics.png" 
-          alt="Electronics"
-          className="category-icon" 
-          width={100} 
-          height={100} />
+          <Image src="/home/electronics.png"
+            alt="Electronics"
+            className="category-icon"
+            width={100}
+            height={100} />
           <p>Electronics</p>
         </div>
         <div className="category" onClick={() => router.push('/user-intetface/home?category=service')}>
-          <Image src="/home/ser.png" 
-          alt="Service"
-          className="category-icon" 
-          width={100} 
-          height={100} />
+          <Image src="/home/ser.png"
+            alt="Service"
+            className="category-icon"
+            width={100}
+            height={100} />
           <p>Service</p>
         </div>
       </section>
 
-      
+
       {/* Welcome Banner Section */}
       <section className="welcome-banner-section">
         <div className="welcome-carousel">
-          <button 
-            className="carousel-btn carousel-btn-left" 
+          <button
+            className="carousel-btn carousel-btn-left"
             onClick={prevSlide}
             aria-label="Previous slide"
             type="button"
           >
             <i className="fa fa-chevron-left"></i>
           </button>
-          
+
           <div className="carousel-container">
-            <div 
-              className="carousel-track" 
+            <div
+              className="carousel-track"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {welcomeImages.map((image, index) => (
@@ -950,7 +953,7 @@ function HomeContent() {
                     <div className="banner-overlay">
                       <div className="banner-content">
 
-                          
+
                       </div>
                     </div>
                   </div>
@@ -959,8 +962,8 @@ function HomeContent() {
             </div>
           </div>
 
-          <button 
-            className="carousel-btn carousel-btn-right" 
+          <button
+            className="carousel-btn carousel-btn-right"
             onClick={nextSlide}
             aria-label="Next slide"
             type="button"
@@ -1012,9 +1015,9 @@ function HomeContent() {
               <div className="product-info">
                 <h2>{product.title}</h2>
                 <p style={{ whiteSpace: 'pre-line' }}>{product.description}</p>
-                <div className="price">{  product.price}</div>
+                <div className="price">{product.price}</div>
                 <div className="product-buttons">
-                  <button 
+                  <button
                     className="product-btn primary-action"
                     onClick={() => {
                       const params = new URLSearchParams();
@@ -1027,7 +1030,7 @@ function HomeContent() {
                     <i className="fa fa-shopping-bag"></i>
                     Buy Now
                   </button>
-                  <button 
+                  <button
                     className="product-btn secondary-action"
                     onClick={() => {
                       // Add to cart functionality or other action
@@ -1038,18 +1041,7 @@ function HomeContent() {
                     <i className="fa fa-cart-plus"></i>
                     Add to Cart
                   </button>
-                  <button 
-                    className="product-btn tertiary-action"
-                    onClick={() => {
-                      // Save to favorites functionality
-                      toggleFavorite(product.id);
-                    }}
-                    type="button"
-                  >
-                    <i className="fa fa-heart"></i>
-                    Save
-                  </button>
-                </div>
+                                  </div>
               </div>
             </div>
           ))}
@@ -1060,8 +1052,8 @@ function HomeContent() {
       {showPostCategories && (
         <div className="post-modal-overlay" onClick={() => setShowPostCategories(false)}>
           <div className="post-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button 
-              className="post-modal-close" 
+            <button
+              className="post-modal-close"
               onClick={() => setShowPostCategories(false)}
               type="button"
             >
@@ -1148,7 +1140,7 @@ function HomeContent() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Messages</h3>
-              <button 
+              <button
                 className="modal-close-btn"
                 onClick={() => setShowChatModal(false)}
                 aria-label="Close"
@@ -1176,7 +1168,7 @@ function HomeContent() {
                       <span className="new-message-dot"></span>
                     </div>
                   </div>
-                  <button 
+                  <button
                     className="go-to-chat-btn"
                     onClick={goToChat}
                   >
