@@ -2,7 +2,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: sans-serif; /* Matches the clean look */
+  font-family: sans-serif;
+  /* Matches the clean look */
 }
 
 .buy-detail-container {
@@ -38,7 +39,8 @@
 
 /* Left Column */
 .left-column {
-  flex: 2; /* Takes up roughly 66% */
+  flex: 2;
+  /* Takes up roughly 66% */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -52,7 +54,8 @@
 .main-image-wrapper {
   position: relative;
   width: 100%;
-  height: 400px; /* Fixed height for main image */
+  height: 400px;
+  /* Fixed height for main image */
   overflow: hidden;
   border-radius: 4px;
   margin-bottom: 0.5rem;
@@ -112,7 +115,8 @@
 
 /* Product Info */
 .product-info {
-  background-color: #e0e0e0; /* Light gray background for info block as seen in screenshot */
+  background-color: #e0e0e0;
+  /* Light gray background for info block as seen in screenshot */
   padding: 1.5rem;
   border-radius: 4px;
 }
@@ -122,7 +126,8 @@
   font-weight: bold;
   margin-bottom: 0.5rem;
   color: #000;
-  font-style: italic; /* Looks slightly italic in screenshot */
+  font-style: italic;
+  /* Looks slightly italic in screenshot */
 }
 
 .product-meta {
@@ -172,7 +177,7 @@
   background: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -206,7 +211,8 @@
 
 /* Right Column */
 .right-column {
-  flex: 1; /* Takes up roughly 33% */
+  flex: 1;
+  /* Takes up roughly 33% */
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -214,7 +220,8 @@
 
 /* Sidebar Profile Card */
 .sidebar-profile-card {
-  background-color: #e0e0e0; /* Gray background matching screenshot header */
+  background-color: #e0e0e0;
+  /* Gray background matching screenshot header */
   padding: 1rem;
   border-radius: 4px;
 }
@@ -228,7 +235,8 @@
 
 .profile-avatar {
   border-radius: 50%;
-  border: 2px solid #4caf50; /* Green border around avatar */
+  border: 2px solid #4caf50;
+  /* Green border around avatar */
 }
 
 .profile-text {
@@ -269,18 +277,22 @@
 }
 
 .btn-view-profile-blue {
-  background-color: #90caf9; /* Light blue */
+  background-color: #90caf9;
+  /* Light blue */
   color: #000;
 }
 
 .btn-chat-green {
-  background-color: #66bb6a; /* Green */
+  background-color: #66bb6a;
+  /* Green */
 }
 
 .sidebar-ad-space {
-  background-color: #e0e0e0; /* Matches the big gray block */
+  background-color: #e0e0e0;
+  /* Matches the big gray block */
   width: 100%;
-  height: 600px; /* Tall empty space */
+  height: 600px;
+  /* Tall empty space */
   border-radius: 4px;
 }
 
@@ -301,12 +313,14 @@
 }
 
 .btn-view-profile-light {
-  background-color: #bbdefb; /* Very light blue */
+  background-color: #bbdefb;
+  /* Very light blue */
   color: #000;
 }
 
 .btn-follow {
-  background-color: #2196f3; /* Strong blue */
+  background-color: #2196f3;
+  /* Strong blue */
   color: white;
 }
 
@@ -315,13 +329,15 @@
   .content-wrapper {
     flex-direction: column;
   }
-  
-  .left-column, .right-column {
+
+  .left-column,
+  .right-column {
     width: 100%;
   }
-  
+
   .right-column {
-    order: -1; /* Move profile to top on mobile? Or keep bottom. Screenshot suggests desktop layout. */
+    order: -1;
+    /* Move profile to top on mobile? Or keep bottom. Screenshot suggests desktop layout. */
     /* Usually profile is important so maybe keep it visible. But for now I will stick to desktop layout logic */
     order: 1;
   }

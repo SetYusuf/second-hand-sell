@@ -24,6 +24,9 @@ function HomeContent() {
   const [hasNewChatMessage, setHasNewChatMessage] = useState(true);
   const [hasNewNotification, setHasNewNotification] = useState(true);
   const [customAvatar, setCustomAvatar] = useState<string>('');
+  const [cart, setCart] = useState<Product[]>([]);
+  const [showCartModal, setShowCartModal] = useState(false);
+  const [userLetter, setUserLetter] = useState('U');
   const searchParams = useSearchParams();
   const rawCategory = searchParams.get('category')?.toLowerCase() || '';
   const selectedCategory = rawCategory;
@@ -34,14 +37,33 @@ function HomeContent() {
     if (savedAvatar) {
       setCustomAvatar(savedAvatar);
     }
+    
+    // Set user letter from localStorage
+    const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+    const userName = userEmail.split('@')[0];
+    setUserLetter(userName.charAt(0).toUpperCase());
+  }, []);
+
+  // Load cart from localStorage on first render
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('cart');
+      if (stored) {
+        const parsed: Product[] = JSON.parse(stored);
+        setCart(parsed);
+      }
+    } catch (error) {
+      console.error('Failed to load cart from storage', error);
+    }
   }, []);
 
   // Listen for email changes and update profile button
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'userEmail') {
-        // Force re-render to update the first letter
-        setCustomAvatar(prev => prev); // This triggers a re-render
+        const newEmail = e.newValue || 'user@example.com';
+        const userName = newEmail.split('@')[0];
+        setUserLetter(userName.charAt(0).toUpperCase());
       }
     };
 
@@ -53,9 +75,9 @@ function HomeContent() {
   useEffect(() => {
     const checkEmailChange = () => {
       const currentEmail = localStorage.getItem('userEmail');
-      // Just trigger a re-render if email exists
       if (currentEmail) {
-        setCustomAvatar(prev => prev);
+        const userName = currentEmail.split('@')[0];
+        setUserLetter(userName.charAt(0).toUpperCase());
       }
     };
 
@@ -76,16 +98,6 @@ function HomeContent() {
       console.error('Failed to load favorite products from storage', error);
     }
   }, []);
-
-  // Get user first letter for default avatar
-  const getUserFirstLetter = () => {
-    if (typeof window !== 'undefined') {
-      const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
-      const userName = userEmail.split('@')[0];
-      return userName.charAt(0).toUpperCase();
-    }
-    return 'U'; // Default fallback for server-side rendering
-  };
 
   // Product data model and dataset
   interface Product {
@@ -473,6 +485,59 @@ function HomeContent() {
     });
   };
 
+  const addToCart = (product: Product) => {
+    setCart((prev) => {
+      const existingItem = prev.find(item => item.id === product.id);
+      let newCart;
+      
+      if (existingItem) {
+        // Item already exists, you could increase quantity here if needed
+        console.log('Item already in cart:', product.title);
+        return prev;
+      } else {
+        // Add new item to cart
+        newCart = [...prev, product];
+        console.log('Added to cart:', product.title);
+      }
+
+      // Persist cart to localStorage
+      try {
+        localStorage.setItem('cart', JSON.stringify(newCart));
+      } catch (error) {
+        console.error('Failed to save cart to storage', error);
+      }
+
+      return newCart;
+    });
+  };
+
+  const removeFromCart = (productId: number) => {
+    setCart((prev) => {
+      const newCart = prev.filter(item => item.id !== productId);
+      
+      // Persist updated cart to localStorage
+      try {
+        localStorage.setItem('cart', JSON.stringify(newCart));
+      } catch (error) {
+        console.error('Failed to save cart to storage', error);
+      }
+
+      return newCart;
+    });
+  };
+
+  const getCartItemCount = () => {
+    return cart.length;
+  };
+
+  const getCartTotal = () => {
+    return cart.reduce((total, item) => {
+      // Extract numeric value from price string (e.g., "$280" -> 280)
+      const priceValue = parseFloat(item.price.replace(/[^0-9.]/g, ''));
+      return total + (isNaN(priceValue) ? 0 : priceValue);
+    }, 0);
+  };
+
   // Welcome banner images - placeholder paths 
   const welcomeImages = [
     '/home/bann3.png',
@@ -653,13 +718,14 @@ function HomeContent() {
               </li>
               <li>
                 <button
-                  onClick={toggleTheme}
-                  className="theme-toggle-nav"
-                  aria-label="Toggle theme"
-                  title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                  onClick={() => setShowCartModal(true)}
+                  className="cart-btn"
+                  aria-label="Cart"
+                  title="View Cart"
                   type="button"
                 >
-                  <i className={`fa ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`}></i>
+                  <i className="fa fa-shopping-cart"></i>
+                  {getCartItemCount() > 0 && <span className="cart-count">{getCartItemCount()}</span>}
                 </button>
               </li>
               <li>
@@ -668,7 +734,7 @@ function HomeContent() {
                     <Image src={customAvatar} alt="Profile" className="profile-nav-avatar" width={32} height={32} />
                   ) : (
                     <div className="profile-nav-letter">
-                      {getUserFirstLetter()}
+                      {userLetter}
                     </div>
                   )}
                 </Link>
@@ -842,13 +908,13 @@ function HomeContent() {
             <button
               className="mobile-menu-item"
               onClick={() => {
-                toggleTheme();
+                setShowCartModal(true);
                 setIsMobileMenuOpen(false);
               }}
               type="button"
             >
-              <i className={`fa ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`}></i>
-              <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+              <i className="fa fa-shopping-cart"></i>
+              <span>Cart {getCartItemCount() > 0 && `(${getCartItemCount()})`}</span>
               <i className="fa fa-chevron-right"></i>
             </button>
 
@@ -857,7 +923,7 @@ function HomeContent() {
                 <Image src={customAvatar} alt="Profile" className="mobile-profile-avatar" width={24} height={24} />
               ) : (
                 <div className="mobile-profile-letter">
-                  {getUserFirstLetter()}
+                  {userLetter}
                 </div>
               )}
               <span>Profile</span>
@@ -1032,10 +1098,7 @@ function HomeContent() {
                   </button>
                   <button
                     className="product-btn secondary-action"
-                    onClick={() => {
-                      // Add to cart functionality or other action
-                      console.log('Added to cart:', product.title);
-                    }}
+                    onClick={() => addToCart(product)}
                     type="button"
                   >
                     <i className="fa fa-cart-plus"></i>
@@ -1181,6 +1244,88 @@ function HomeContent() {
                   <i className="fa fa-comments"></i>
                   <p>No new messages</p>
                   <p>Your conversations will appear here</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cart Modal */}
+      {showCartModal && (
+        <div className="modal-overlay" onClick={() => setShowCartModal(false)}>
+          <div className="modal-content cart-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Shopping Cart ({getCartItemCount()} items)</h3>
+              <button
+                className="modal-close-btn"
+                onClick={() => setShowCartModal(false)}
+                aria-label="Close"
+              >
+                <i className="fa fa-times"></i>
+              </button>
+            </div>
+            <div className="modal-body cart-body">
+              {cart.length > 0 ? (
+                <div className="cart-items">
+                  {cart.map((item) => (
+                    <div key={item.id} className="cart-item">
+                      <div className="cart-item-image">
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          width={60}
+                          height={60}
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </div>
+                      <div className="cart-item-details">
+                        <h4>{item.title}</h4>
+                        <p className="cart-item-price">{item.price}</p>
+                        <p className="cart-item-description" style={{ fontSize: '12px', color: '#666' }}>
+                          {item.description.split('\n')[0]}
+                        </p>
+                      </div>
+                      <div className="cart-item-actions">
+                        <button
+                          className="remove-from-cart-btn"
+                          onClick={() => removeFromCart(item.id)}
+                          aria-label="Remove item"
+                          type="button"
+                        >
+                          <i className="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="cart-summary">
+                    <div className="cart-total">
+                      <div className="cart-items-count">
+                        <span>Items: {cart.length}</span>
+                      </div>
+                      <div className="cart-price-total">
+                        <span>Total: ${getCartTotal().toFixed(2)}</span>
+                      </div>
+                    </div>
+                    <button className="checkout-btn">
+                      <i className="fa fa-credit-card"></i>
+                      Proceed to Checkout (${getCartTotal().toFixed(2)})
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="empty-cart">
+                  <i className="fa fa-shopping-cart"></i>
+                  <p>Your cart is empty</p>
+                  <p>Browse products and add them to your cart</p>
+                  <button
+                    className="continue-shopping-btn"
+                    onClick={() => setShowCartModal(false)}
+                    type="button"
+                  >
+                    <i className="fa fa-arrow-left"></i>
+                    Continue Shopping
+                  </button>
                 </div>
               )}
             </div>
