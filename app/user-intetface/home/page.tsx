@@ -420,6 +420,13 @@ function HomeContent() {
     { id: 4, name: 'Lina', preview: 'Can we meet tomorrow morning?', time: '10:12am', avatar: '/notification-image/lina.png', unread: true },
   ];
 
+  const handleProductClick = (product: Product) => {
+    const params = new URLSearchParams();
+    params.set('category', product.title.toLowerCase());
+    params.set('id', product.id.toString());
+    router.push(`/user-intetface/buy-detail?${params.toString()}`);
+  };
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
@@ -1060,7 +1067,12 @@ function HomeContent() {
 
         <div className="product-list-box">
           {filteredProducts.map((product) => (
-            <div key={product.id} className="product-card">
+            <div 
+              key={product.id} 
+              className="product-card clickable"
+              onClick={() => handleProductClick(product)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="product-image-container">
                 <Image
                   src={product.image}
@@ -1070,7 +1082,10 @@ function HomeContent() {
                 />
                 <button
                   className={`favorite-btn ${favorites.has(product.id) ? 'favorited' : ''}`}
-                  onClick={() => toggleFavorite(product.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(product.id);
+                  }}
                   aria-label="Add to favorites"
                   type="button"
                 >
@@ -1085,7 +1100,8 @@ function HomeContent() {
                 <div className="product-buttons">
                   <button
                     className="product-btn primary-action"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       const params = new URLSearchParams();
                       params.set('category', product.title.toLowerCase());
                       params.set('id', product.id.toString());
@@ -1098,13 +1114,16 @@ function HomeContent() {
                   </button>
                   <button
                     className="product-btn secondary-action"
-                    onClick={() => addToCart(product)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(product);
+                    }}
                     type="button"
                   >
                     <i className="fa fa-cart-plus"></i>
                     Add to Cart
                   </button>
-                                  </div>
+                </div>
               </div>
             </div>
           ))}
