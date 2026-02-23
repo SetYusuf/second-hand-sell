@@ -15,7 +15,7 @@ function HomeContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [langDropdown, setLangDropdown] = useState(false);
   const [currentLang, setCurrentLang] = useState('eng');
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showPostCategories, setShowPostCategories] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -24,7 +24,16 @@ function HomeContent() {
   const [hasNewChatMessage, setHasNewChatMessage] = useState(true);
   const [hasNewNotification, setHasNewNotification] = useState(true);
   const [customAvatar, setCustomAvatar] = useState<string>('');
-  const [cart, setCart] = useState<Product[]>([]);
+  // Cart interface for localStorage compatibility
+  interface CartItem {
+    id: string;
+    title: string;
+    description: string;
+    price: string;
+    image: string;
+  }
+
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [showCartModal, setShowCartModal] = useState(false);
   const [userLetter, setUserLetter] = useState('U');
   const searchParams = useSearchParams();
@@ -49,7 +58,7 @@ function HomeContent() {
     try {
       const stored = localStorage.getItem('cart');
       if (stored) {
-        const parsed: Product[] = JSON.parse(stored);
+        const parsed: CartItem[] = JSON.parse(stored);
         setCart(parsed);
       }
     } catch (error) {
@@ -91,7 +100,7 @@ function HomeContent() {
       const stored = localStorage.getItem('favoriteProducts');
       if (stored) {
         const parsed: Product[] = JSON.parse(stored);
-        const ids = new Set(parsed.map((p) => p.id));
+        const ids = new Set(parsed.map((p) => p._id));
         setFavorites(ids);
       }
     } catch (error) {
@@ -99,13 +108,24 @@ function HomeContent() {
     }
   }, []);
 
-  // Product data model and dataset
+  // Product data model
   interface Product {
-    id: number;
-    title: 'Computer' | 'Phone' | 'Product' | 'Book' | 'Service' | string;
+    _id: string;
+    title: string;
     description: string;
-    price: string;
-    image: string;
+    price: number;
+    imageUrl: string;
+    condition: string;
+    location: string;
+    brand: string;
+    type: string;
+    specs?: string;
+    contactName: string;
+    contactPhone: string;
+    contactEmail: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
   }
 
   // Notification data model and dataset
@@ -119,278 +139,28 @@ function HomeContent() {
     read?: boolean;
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const products: Product[] = [
-    {
-      id: 1,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Sen Sok \n 98% Condition, 100% working',
-      price: '$280',
-      image: '/home/computer.png',
-    },
-    {
-      id: 2,
-      title: 'Phone',
-      description: 'Phone for Selling \nlocation Sen Sok \n 98% Condition, 100% working',
-      price: '$250',
-      image: '/home/phone.png',
-    },
-    {
-      id: 3,
-      title: 'Product',
-      description: 'Product for Selling \n location near RUPP\n 90% Condition, 100% working',
-      price: '$200',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 4,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Sen Sok \n 98% Condition, 100% working',
-      price: '$1200',
-      image: '/home/computer.png',
-    },
-    {
-      id: 5,
-      title: 'Computer ',
-      description: 'Computer for Selling \nlocation Phnom Penh \n 98% Condition, 100% working',
-      price: '$320',
-      image: '/home/computer.png',
-    },
-    {
-      id: 6,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$450',
-      image: '/home/computer.png',
-    },
-    {
-      id: 7,
-      title: 'Product',
-      description: 'Product for Selling \n location near Olympic Stadium\n 98% Condition, 100% working',
-      price: '$180',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 8,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$1500',
-      image: '/home/computer.png',
-    },
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    {
-      id: 9,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Sen Sok \n 98% Condition, 100% working',
-      price: '$280',
-      image: '/home/computer.png',
-    },
-    {
-      id: 10,
-      title: 'Phone',
-      description: 'Phone for Selling \n location TK \n98% Condition, 100% working',
-      price: '$150',
-      image: '/home/phone.png',
-    },
-    {
-      id: 11,
-      title: 'Product',
-      description: 'Product for Selling \n location near RUPP\n 90% Condition, 100% working',
-      price: '$200',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 12,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$1200',
-      image: '/home/computer.png',
-    },
-    {
-      id: 13,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Phnom Penh \n 98% Condition, 100% working',
-      price: '$320',
-      image: '/home/computer.png',
-    },
-    {
-      id: 14,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$450',
-      image: '/home/computer.png',
-    },
-    {
-      id: 15,
-      title: 'Product',
-      description: 'Product for Selling \n location near Olympic Stadium\n 98% Condition, 100% working',
-      price: '$180',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 16,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$1500',
-      image: '/home/computer.png',
-    },
-
-    {
-      id: 17,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Sen Sok \n 98% Condition, 100% working',
-      price: '$280',
-      image: '/home/computer.png',
-    },
-    {
-      id: 18,
-      title: 'Phone',
-      description: 'Phone for Selling \n location TK \n98% Condition, 100% working',
-      price: '$150',
-      image: '/home/phone.png',
-    },
-    {
-      id: 19,
-      title: 'Product',
-      description: 'Product for Selling \n location near RUPP\n 90% Condition, 100% working',
-      price: '$200',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 20,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$1200',
-      image: '/home/computer.png',
-    },
-    {
-      id: 21,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Phnom Penh \n 98% Condition, 100% working',
-      price: '$320',
-      image: '/home/computer.png',
-    },
-    {
-      id: 22,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$450',
-      image: '/home/computer.png',
-    },
-    {
-      id: 23,
-      title: 'Product',
-      description: 'Product for Selling \n location near Olympic Stadium\n 98% Condition, 100% working',
-      price: '$180',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 24,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$1500',
-      image: '/home/computer.png',
-    },
-
-    {
-      id: 25,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Sen Sok \n 98% Condition, 100% working',
-      price: '$280',
-      image: '/home/computer.png',
-    },
-    {
-      id: 26,
-      title: 'Phone',
-      description: 'Phone for Selling \n location TK \n98% Condition, 100% working',
-      price: '$150',
-      image: '/home/phone.png',
-    },
-    {
-      id: 27,
-      title: 'Product',
-      description: 'Product for Selling \n location near RUPP\n 90% Condition, 100% working',
-      price: '$200',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 28,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$1200',
-      image: '/home/computer.png',
-    },
-    {
-      id: 29,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Phnom Penh \n 98% Condition, 100% working',
-      price: '$320',
-      image: '/home/computer.png',
-    },
-    {
-      id: 30,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$450',
-      image: '/home/computer.png',
-    },
-    {
-      id: 31,
-      title: 'Product',
-      description: 'Product for Selling \n location near Olympic Stadium\n 98% Condition, 100% working',
-      price: '$180',
-      image: '/home/electronics.png',
-    },
-    {
-      id: 32,
-      title: 'Computer',
-      description: 'Computer for Selling \nlocation Toul Kork \n 98% Condition, 100% working',
-      price: '$1500',
-      image: '/home/computer.png',
-    },
-    {
-      id: 33,
-      title: 'Book',
-      description: 'Java Programming \n Author: John Doe',
-      price: '$25',
-      image: '/home/book.png',
-    },
-    {
-      id: 34,
-      title: 'Book',
-      description: 'Clean Code \n Author: Robert C. Martin',
-      price: '$30',
-      image: '/home/book.png',
-    },
-    {
-      id: 35,
-      title: 'Book',
-      description: 'The Pragmatic Programmer \n Author: Andrew Hunt',
-      price: '$35',
-      image: '/home/book.png',
-    },
-    {
-      id: 36,
-      title: 'Service',
-      description: 'House Cleaning \n Professional cleaning service',
-      price: '$50',
-      image: '/home/ser.png',
-    },
-    {
-      id: 37,
-      title: 'Service',
-      description: 'AC Repair \n Fast and reliable AC repair',
-      price: '$40',
-      image: '/home/ser.png',
-    },
-    {
-      id: 38,
-      title: 'Service',
-      description: 'Plumbing Service \n Expert plumbing solutions',
-      price: '$60',
-      image: '/home/ser.png',
-    },
-  ];
+  // Fetch posts from database
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const url = searchQuery ? `/api/posts?search=${searchQuery}` : '/api/posts';
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.success) {
+          setProducts(data.posts);
+        }
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [searchQuery]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const notifications: NotificationItem[] = [
@@ -422,8 +192,8 @@ function HomeContent() {
 
   const handleProductClick = (product: Product) => {
     const params = new URLSearchParams();
-    params.set('category', product.title.toLowerCase());
-    params.set('id', product.id.toString());
+    params.set('category', product.type.toLowerCase());
+    params.set('id', product._id);
     router.push(`/user-intetface/buy-detail?${params.toString()}`);
   };
 
@@ -469,7 +239,7 @@ function HomeContent() {
     console.log(`Switched to ${lang === 'eng' ? 'English' : 'Khmer'}`);
   };
 
-  const toggleFavorite = (productId: number) => {
+  const toggleFavorite = (productId: string) => {
     setFavorites((prev) => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(productId)) {
@@ -482,7 +252,7 @@ function HomeContent() {
 
       // Persist favorites to localStorage so they can be viewed later
       try {
-        const favoriteProducts = products.filter((p) => newFavorites.has(p.id));
+        const favoriteProducts = products.filter((p) => newFavorites.has(p._id));
         localStorage.setItem('favoriteProducts', JSON.stringify(favoriteProducts));
       } catch (error) {
         console.error('Failed to save favorite products to storage', error);
@@ -494,7 +264,7 @@ function HomeContent() {
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
-      const existingItem = prev.find(item => item.id === product.id);
+      const existingItem = prev.find(item => item.id === product._id);
       let newCart;
       
       if (existingItem) {
@@ -502,8 +272,15 @@ function HomeContent() {
         console.log('Item already in cart:', product.title);
         return prev;
       } else {
-        // Add new item to cart
-        newCart = [...prev, product];
+        // Add new item to cart - convert to cart format
+        const cartItem = {
+          id: product._id,
+          title: product.title,
+          description: product.description,
+          price: `$${product.price}`,
+          image: product.imageUrl || '/home/computer.png'
+        };
+        newCart = [...prev, cartItem];
         console.log('Added to cart:', product.title);
       }
 
@@ -518,7 +295,7 @@ function HomeContent() {
     });
   };
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = (productId: string) => {
     setCart((prev) => {
       const newCart = prev.filter(item => item.id !== productId);
       
@@ -538,7 +315,7 @@ function HomeContent() {
   };
 
   const getCartTotal = () => {
-    return cart.reduce((total, item) => {
+    return cart.reduce((total: number, item: { price: string }) => {
       // Extract numeric value from price string (e.g., "$280" -> 280)
       const priceValue = parseFloat(item.price.replace(/[^0-9.]/g, ''));
       return total + (isNaN(priceValue) ? 0 : priceValue);
@@ -580,7 +357,7 @@ function HomeContent() {
 
   const filteredProducts = useMemo(() => {
     const base = selectedCategory
-      ? products.filter((r) => r.title.toLowerCase().includes(selectedCategory))
+      ? products.filter((r) => r.type.toLowerCase().includes(selectedCategory) || r.title.toLowerCase().includes(selectedCategory))
       : products;
     const q = searchQuery.trim().toLowerCase();
     if (!q) return base;
@@ -588,7 +365,9 @@ function HomeContent() {
       (r) =>
         r.title.toLowerCase().includes(q) ||
         r.description.toLowerCase().includes(q) ||
-        r.price.toLowerCase().includes(q)
+        r.brand.toLowerCase().includes(q) ||
+        r.location.toLowerCase().includes(q) ||
+        r.price.toString().includes(q)
     );
   }, [products, selectedCategory, searchQuery]);
 
@@ -1066,25 +845,37 @@ function HomeContent() {
         </h1>
 
         <div className="product-list-box">
-          {filteredProducts.map((product) => (
-            <div 
-              key={product.id} 
-              className="product-card clickable"
-              onClick={() => handleProductClick(product)}
-              style={{ cursor: 'pointer' }}
-            >
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <i className="fa fa-spinner fa-spin" style={{ fontSize: '2rem', marginBottom: '1rem', display: 'block' }}></i>
+              <p>Loading posts...</p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <i className="fa fa-inbox" style={{ fontSize: '2rem', marginBottom: '1rem', display: 'block', color: '#999' }}></i>
+              <p>No posts found</p>
+              <p style={{ color: '#666', fontSize: '0.9rem' }}>Be the first to post an item!</p>
+            </div>
+          ) : (
+            filteredProducts.map((product) => (
+              <div 
+                key={product._id} 
+                className="product-card clickable"
+                onClick={() => handleProductClick(product)}
+                style={{ cursor: 'pointer' }}
+              >
               <div className="product-image-container">
                 <Image
-                  src={product.image}
+                  src={product.imageUrl || '/home/computer.png'}
                   alt={product.title}
                   fill
                   style={{ objectFit: 'cover' }}
                 />
                 <button
-                  className={`favorite-btn ${favorites.has(product.id) ? 'favorited' : ''}`}
+                  className={`favorite-btn ${favorites.has(product._id) ? 'favorited' : ''}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleFavorite(product.id);
+                    toggleFavorite(product._id);
                   }}
                   aria-label="Add to favorites"
                   type="button"
@@ -1096,15 +887,15 @@ function HomeContent() {
               <div className="product-info">
                 <h2>{product.title}</h2>
                 <p style={{ whiteSpace: 'pre-line' }}>{product.description}</p>
-                <div className="price">{product.price}</div>
+                <div className="price">${product.price}</div>
                 <div className="product-buttons">
                   <button
                     className="product-btn primary-action"
                     onClick={(e) => {
                       e.stopPropagation();
                       const params = new URLSearchParams();
-                      params.set('category', product.title.toLowerCase());
-                      params.set('id', product.id.toString());
+                      params.set('category', product.type.toLowerCase());
+                      params.set('id', product._id);
                       router.push(`/user-intetface/buy-detail?${params.toString()}`);
                     }}
                     type="button"
@@ -1126,7 +917,8 @@ function HomeContent() {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+          )}
         </div>
       </section>
 
