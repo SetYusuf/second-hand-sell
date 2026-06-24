@@ -9,6 +9,7 @@ async function detailedCheck() {
     console.log('=== MONGODB CONNECTION DETAILS ===');
     console.log('Connected to:', mongoose.connection.name);
     console.log('Host:', mongoose.connection.host);
+    console.log
     console.log('Port:', mongoose.connection.port);
     
     // List all databases
