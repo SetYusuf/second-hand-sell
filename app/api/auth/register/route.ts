@@ -1,10 +1,13 @@
-import { getDatabase } from "@/lib/mongodb"
+import { getDB } from "@/lib/db"
 import bcrypt from "bcryptjs"
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const db = await getDatabase()
+    const db = await getDB()
+    if (!db) {
+      return Response.json({ error: "Database connection failed" }, { status: 500 })
+    }
     const users = db.collection("users")
 
     // Check if user already exists

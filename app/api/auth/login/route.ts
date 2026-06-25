@@ -1,13 +1,24 @@
-import { getDatabase } from "@/lib/mongodb"
+import { getDB } from "@/lib/db"
 import bcrypt from "bcryptjs"
+import { signToken } from "@/lib/auth"
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const db = await getDatabase()
+    
+    if (!body.email || !body.password) {
+      return Response.json(
+        { error: "Email and password required" },
+        { status: 400 }
+      )
+    }
+
+    const db = await getDB()
+    if (!db) {
+      return Response.json({ error: "Database connection failed" }, { status: 500 })
+    }
     const users = db.collection("users")
 
-    // Find user by email
     const user = await users.findOne({ email: body.email })
     if (!user) {
       return Response.json(
@@ -16,7 +27,6 @@ export async function POST(req: Request) {
       )
     }
 
-    // Compare password
     const isPasswordValid = await bcrypt.compare(body.password, user.password)
     if (!isPasswordValid) {
       return Response.json(
@@ -25,16 +35,23 @@ export async function POST(req: Request) {
       )
     }
 
+    const token = signToken({
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role,
+      name: user.name
+    })
+
     return Response.json({
       success: true,
+      token: token,
       user: {
-        id: user._id,
+        id: user._id.toString(),
         name: user.name,
         email: user.email,
         role: user.role
       }
     })
-
   } catch (error) {
     console.error(error)
     return Response.json(

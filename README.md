@@ -1,36 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RUPP Secondhand Marketplace
 
-## Getting Started
+A full-stack Next.js application for buying and selling second-hand items. This project includes both frontend (React/Next.js UI) and backend (API routes with MongoDB) capabilities.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework:** Next.js 16.1.0 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Database:** MongoDB (Atlas or local)
+- **ODM:** Mongoose v9
+- **Authentication:** bcryptjs for password hashing
+- **Icons:** Lucide React
+
+## Prerequisites
+
+- Node.js 18+ (or use `pnpm`/`yarn`/`bun`)
+- MongoDB instance (local or MongoDB Atlas)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/SetYusuf/second-hand-sell.git
+cd second-hand-sell
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+pnpm install
+# or
+yarn install
+```
+
+3. Set up environment variables:
+
+Create a `.env.local` file in the root directory (or copy from `.env`):
+
+```bash
+cp .env .env.local
+```
+
+Edit `.env.local` with your MongoDB connection details:
+
+```env
+MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/
+MONGODB_DB=your_database_name
+```
+
+**MongoDB Connection Options:**
+- **MongoDB Atlas:** `mongodb+srv://username:password@cluster.mongodb.net/?appName=Cluster0`
+- **Local MongoDB:** `mongodb://localhost:27017`
+- **MongoDB with auth:** `mongodb://username:password@host:port/`
+
+## Running the Application
+
+### Development Mode
+
+Start the development server (includes both frontend and backend API):
 
 ```bash
 npm run dev
 # or
-yarn dev
-# or
 pnpm dev
 # or
-bun dev
+yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at:
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
+- **API Routes:** `http://localhost:3000/api/*`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Build the application:
+```bash
+npm run build
+```
+
+2. Start the production server:
+```bash
+npm start
+```
+
+## Project Structure
+
+```
+second-hand-sell/
+├── app/
+│   ├── api/              # Backend API routes
+│   │   ├── auth/         # Authentication endpoints
+│   │   │   ├── login/
+│   │   │   └── register/
+│   │   ├── posts/        # Posts CRUD endpoints
+│   │   └── upload/       # File upload endpoint
+│   ├── dashboardadmin/   # Admin dashboard
+│   ├── dashboardowner/   # Owner dashboard
+│   ├── login/            # Login page
+│   ├── register/         # Registration page
+│   ├── user-intetface/   # User interface
+│   ├── layout.tsx        # Root layout
+│   └── page.tsx          # Home page
+├── components/           # Reusable React components
+├── config/
+│   └── database.ts       # Database configuration
+├── lib/
+│   ├── mongodb.ts        # MongoDB connection utilities
+│   ├── mongoose.ts       # Mongoose connection
+│   └── models/           # Mongoose models
+├── public/               # Static assets
+└── .env.local            # Environment variables (create this)
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | User login |
+| GET | `/api/posts` | Get all posts |
+| POST | `/api/posts` | Create a new post |
+| PUT | `/api/posts/[id]` | Update a post |
+| DELETE | `/api/posts/[id]` | Delete a post |
+| POST | `/api/upload` | Upload files |
+
+## Database Setup
+
+The application uses MongoDB. You can use either:
+
+1. **MongoDB Atlas (Recommended for production):**
+   - Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+   - Get your connection string and update `MONGODB_URL` in `.env.local`
+
+2. **Local MongoDB:**
+   - Install MongoDB locally
+   - Start the MongoDB service
+   - Use `MONGODB_URL=mongodb://localhost:27017`
+
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [MongoDB Documentation](https://docs.mongodb.com/)
+- [Mongoose Documentation](https://mongoosejs.com/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
