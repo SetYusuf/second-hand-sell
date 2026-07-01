@@ -1,0 +1,284 @@
+/* ═══════════════════════════════════════════════════════════
+   USER PROFILE MODAL — extends admin-modal to be full width,
+   scrollable, and content-rich. Fixes "black bar" bug by
+   removing the small max-width and giving explicit width: 100%
+   to inner content instead of relying on collapsed auto sizing.
+   ═══════════════════════════════════════════════════════════ */
+
+.user-profile-modal {
+  max-width: 900px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-profile-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.user-profile-modal__close {
+  background: transparent;
+  border: 1px solid #000;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #000;
+}
+
+.user-profile-modal__close:hover {
+  background: #000;
+  color: #fff;
+}
+
+.user-profile-modal__loading,
+.user-profile-modal__error {
+  padding: 40px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.user-profile-modal__body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Identity */
+.user-profile-modal__identity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.user-profile-modal__avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #000;
+  background: #e0e0e0;
+  flex-shrink: 0;
+}
+
+.user-profile-modal__avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #555;
+}
+
+.user-profile-modal__identity-info {
+  min-width: 0;
+}
+
+.user-profile-modal__name {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 2px 0;
+  color: #000;
+}
+
+.user-profile-modal__username {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.user-profile-modal__badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.user-profile-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #000;
+  color: #000;
+  background: #fff;
+}
+
+.user-profile-badge--role-admin,
+.user-profile-badge--role-owner {
+  background: #000;
+  color: #fff;
+}
+
+.user-profile-badge--active {
+  background: #fff;
+  color: #000;
+}
+
+.user-profile-badge--banned {
+  background: #000;
+  color: #fff;
+}
+
+/* Actions */
+.user-profile-modal__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Sections */
+.user-profile-modal__section {
+  padding-top: 4px;
+}
+
+.user-profile-modal__section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  color: #000;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 6px;
+}
+
+.user-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px 20px;
+  width: 100%;
+}
+
+.user-profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.user-profile-field__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+  font-weight: 600;
+}
+
+.user-profile-field__value {
+  font-size: 14px;
+  color: #000;
+  word-break: break-word;
+}
+
+.user-profile-field__value--empty {
+  color: #999;
+  font-style: italic;
+}
+
+/* Listings */
+.user-profile-modal__listings-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 16px 0 12px 0;
+  color: #000;
+}
+
+.user-profile-modal__empty {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+  border: 1px dashed #ccc;
+}
+
+.user-profile-modal__listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.user-profile-listing-card {
+  border: 1px solid #000;
+  overflow: hidden;
+}
+
+.user-profile-listing-card__image-wrap {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.user-profile-listing-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-profile-listing-card__image--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 11px;
+  color: #999;
+}
+
+.user-profile-listing-card__body {
+  padding: 8px;
+}
+
+.user-profile-listing-card__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-profile-listing-card__price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #000;
+  margin-top: 2px;
+}
+
+.user-profile-listing-card__status {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #666;
+  margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+  .user-profile-modal {
+    width: 100%;
+    max-height: 100vh;
+    padding: 16px;
+  }
+
+  .user-profile-modal__identity {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .user-profile-modal__badges {
+    justify-content: center;
+  }
+}

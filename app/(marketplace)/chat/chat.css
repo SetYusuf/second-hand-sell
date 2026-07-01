@@ -49,6 +49,8 @@
 .chat-heart.liked { color: rgb(12,132,202); }
 .chat-heart.liked i { color: rgb(12,132,202); }
 .chat-heart:hover { background: rgb(172, 234, 255); transform: scale(1.1); }
+.chat-unread-badge { flex-shrink: 0; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: rgb(12,132,202); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
 
 .chat-detail { background: #fff; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; }
 .chat-detail-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid #e0e0e0; }

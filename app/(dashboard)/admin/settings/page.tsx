@@ -1,68 +1,143 @@
-import React from 'react';
+'use client';
 
-export default function Settings() {
-  const settings = [
-    { id: 1, name: 'General Settings', description: 'Configure site title, logo, and basic info.', lastUpdated: '2 days ago' },
-    { id: 2, name: 'Security', description: 'Password policy, 2FA, and login logs.', lastUpdated: '1 week ago' },
-    { id: 3, name: 'Email Notifications', description: 'Manage email templates and triggers.', lastUpdated: '3 days ago' },
-    { id: 4, name: 'Payment Gateways', description: 'Setup Stripe, PayPal, and other providers.', lastUpdated: '1 month ago' },
-    { id: 5, name: 'User Roles', description: 'Define permissions for Admins, Users, and Owners.', lastUpdated: '2 weeks ago' },
-  ];
+import { useEffect, useState } from 'react';
+import AdminLayout from '@/components/admin/AdminLayout';
+
+export default function AdminSettingsPage() {
+  const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState({
+    platformName: 'RUPP SecondHand Marketplace',
+    maintenanceMode: false,
+    jwtExpiration: '7',
+    emailVerification: true,
+    maxImagesPerListing: 5,
+    maxTitleLength: 100,
+    guestBrowsing: true,
+  });
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 500);
+  }, []);
+
+  const handleSave = () => {
+    console.log('Saving settings:', settings);
+    alert('Settings saved successfully');
+  };
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <div style={{ fontSize: '14px', color: '#666' }}>Loading...</div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
-    <div className="dashboard-section">
-      <div className="flex justify-between items-center mb-6" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <div>
-          <h2 className="dashboard-heading">Settings</h2>
-          <p className="dashboard-hint">Configure application preferences and system settings</p>
+    <AdminLayout>
+      <div>
+        <h1 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+          Settings
+        </h1>
+
+        <div className="admin-table-container" style={{ padding: '24px', maxWidth: '800px' }}>
+          {/* Platform Settings */}
+          <div style={{ marginBottom: '32px' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Platform
+            </h2>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>Platform Name</label>
+              <input
+                type="text"
+                className="admin-input"
+                value={settings.platformName}
+                onChange={(e) => setSettings({ ...settings, platformName: e.target.value })}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={settings.maintenanceMode}
+                  onChange={(e) => setSettings({ ...settings, maintenanceMode: e.target.checked })}
+                />
+                <span style={{ fontSize: '14px', fontWeight: '600' }}>Maintenance Mode</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Security Settings */}
+          <div style={{ marginBottom: '32px' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Security
+            </h2>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>JWT Expiration (days)</label>
+              <input
+                type="number"
+                className="admin-input"
+                value={settings.jwtExpiration}
+                onChange={(e) => setSettings({ ...settings, jwtExpiration: e.target.value })}
+                style={{ maxWidth: '200px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={settings.emailVerification}
+                  onChange={(e) => setSettings({ ...settings, emailVerification: e.target.checked })}
+                />
+                <span style={{ fontSize: '14px', fontWeight: '600' }}>Email Verification Required</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Marketplace Settings */}
+          <div style={{ marginBottom: '32px' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Marketplace
+            </h2>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>Max Images Per Listing</label>
+              <input
+                type="number"
+                className="admin-input"
+                value={settings.maxImagesPerListing}
+                onChange={(e) => setSettings({ ...settings, maxImagesPerListing: parseInt(e.target.value) })}
+                style={{ maxWidth: '200px' }}
+              />
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>Max Title Length</label>
+              <input
+                type="number"
+                className="admin-input"
+                value={settings.maxTitleLength}
+                onChange={(e) => setSettings({ ...settings, maxTitleLength: parseInt(e.target.value) })}
+                style={{ maxWidth: '200px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={settings.guestBrowsing}
+                  onChange={(e) => setSettings({ ...settings, guestBrowsing: e.target.checked })}
+                />
+                <span style={{ fontSize: '14px', fontWeight: '600' }}>Guest Browsing Allowed</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <button onClick={handleSave} className="admin-btn" style={{ width: '100%', padding: '14px' }}>
+            Save Settings
+          </button>
         </div>
       </div>
-
-      <div className="table-container" style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '0.5rem', 
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        overflow: 'hidden'
-      }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead style={{ backgroundColor: '#f9fafb' }}>
-            <tr>
-              <th style={{ padding: '0.75rem 1.5rem', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase', color: '#6b7280', letterSpacing: '0.05em' }}>Setting Section</th>
-              <th style={{ padding: '0.75rem 1.5rem', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase', color: '#6b7280', letterSpacing: '0.05em' }}>Description</th>
-              <th style={{ padding: '0.75rem 1.5rem', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase', color: '#6b7280', letterSpacing: '0.05em' }}>Last Updated</th>
-              <th style={{ padding: '0.75rem 1.5rem', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase', color: '#6b7280', letterSpacing: '0.05em' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody style={{}}>
-            {settings.map((setting) => (
-              <tr key={setting.id} style={{ borderTop: '1px solid #e5e7eb' }}>
-                <td style={{ padding: '1rem 1.5rem', whiteSpace: 'nowrap' }}>
-                  <div style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827' }}>{setting.name}</div>
-                </td>
-                <td style={{ padding: '1rem 1.5rem' }}>
-                  <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>{setting.description}</div>
-                </td>
-                <td style={{ padding: '1rem 1.5rem', whiteSpace: 'nowrap', fontSize: '0.875rem', color: '#6b7280' }}>
-                  {setting.lastUpdated}
-                </td>
-                <td style={{ padding: '1rem 1.5rem', whiteSpace: 'nowrap', fontSize: '0.875rem', fontWeight: '500' }}>
-                  <button style={{ 
-                    backgroundColor: '#4f46e5', 
-                    color: 'white', 
-                    padding: '0.375rem 0.75rem', 
-                    borderRadius: '0.375rem', 
-                    border: 'none', 
-                    cursor: 'pointer',
-                    fontSize: '0.875rem'
-                  }}>
-                    Configure
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </AdminLayout>
   );
 }

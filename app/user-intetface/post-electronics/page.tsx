@@ -1,0 +1,1 @@
+export { default } from '../../(marketplace)/sell/electronics/page'

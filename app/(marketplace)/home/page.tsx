@@ -8,10 +8,13 @@ import './home.css';
 import NotificationDropdownEnhanced from './NotificationDropdownEnhanced';
 import ChatDropdownEnhanced from './ChatDropdownEnhanced';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useSocket } from '../../contexts/SocketContext';
+import { getStoredCustomAvatar, getStoredUserEmail } from '@/lib/auth-storage';
 
 function HomeContent() {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
+  const { unreadCount } = useSocket();
   const [searchQuery, setSearchQuery] = useState('');
   const [langDropdown, setLangDropdown] = useState(false);
   const [currentLang, setCurrentLang] = useState('eng');
@@ -21,9 +24,9 @@ function HomeContent() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [hasNewChatMessage, setHasNewChatMessage] = useState(true);
   const [hasNewNotification, setHasNewNotification] = useState(true);
   const [customAvatar, setCustomAvatar] = useState<string>('');
+  const hasNewChatMessage = unreadCount > 0;
   // Cart interface for localStorage compatibility
   interface CartItem {
     id: string;
@@ -42,13 +45,13 @@ function HomeContent() {
 
   // Load custom avatar from localStorage
   useEffect(() => {
-    const savedAvatar = localStorage.getItem('customAvatar');
+    const savedAvatar = getStoredCustomAvatar();
     if (savedAvatar) {
       setCustomAvatar(savedAvatar);
     }
     
     // Set user letter from localStorage
-    const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+    const userEmail = getStoredUserEmail() || 'user@example.com';
     const userName = userEmail.split('@')[0];
     setUserLetter(userName.charAt(0).toUpperCase());
   }, []);
@@ -83,7 +86,7 @@ function HomeContent() {
   // Check for email changes periodically (for same-tab updates)
   useEffect(() => {
     const checkEmailChange = () => {
-      const currentEmail = localStorage.getItem('userEmail');
+      const currentEmail = getStoredUserEmail();
       if (currentEmail) {
         const userName = currentEmail.split('@')[0];
         setUserLetter(userName.charAt(0).toUpperCase());
@@ -147,7 +150,7 @@ function HomeContent() {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const url = searchQuery ? `/api/posts?search=${searchQuery}` : '/api/posts';
+        const url = searchQuery ? `/api/products?search=${searchQuery}` : '/api/products';
         const res = await fetch(url);
         const data = await res.json();
         if (data.success) {
@@ -216,13 +219,11 @@ function HomeContent() {
   };
 
   const goToChat = () => {
-    setHasNewChatMessage(false);
     setShowChatModal(false);
     router.push('/user-intetface/chat');
   };
 
   const goToSpecificChat = (chat: ChatItem) => {
-    setHasNewChatMessage(false);
     setShowChatModal(false);
     router.push(`/user-intetface/inside-chat?name=${encodeURIComponent(chat.name)}&avatar=${encodeURIComponent(chat.avatar)}&msg=${encodeURIComponent(chat.preview)}`);
   };
@@ -356,7 +357,7 @@ function HomeContent() {
   }, [langDropdown]);
 
   const filteredProducts = useMemo(() => {
-    const base = selectedCategory
+    const base = selectedCategory && selectedCategory !== 'all'
       ? products.filter((r) => r.type.toLowerCase().includes(selectedCategory) || r.title.toLowerCase().includes(selectedCategory))
       : products;
     const q = searchQuery.trim().toLowerCase();
@@ -381,7 +382,9 @@ function HomeContent() {
           ? 'Book'
           : selectedCategory === 'service'
             ? 'Service'
-            : 'Product, Computer, Phone, Book, Service';
+            : selectedCategory === 'all'
+              ? 'All Items'
+              : 'Product, Computer, Phone, Book, Service';
 
   return (
     <>
@@ -487,7 +490,7 @@ function HomeContent() {
                   type="button"
                 >
                   <i className="fa fa-comments"></i>
-                  {hasNewChatMessage && <span className="chat-notification-dot"></span>}
+                  {unreadCount > 0 && <span className="chat-notification-dot"></span>}
                 </button>
               </li>
               <li>
@@ -673,7 +676,7 @@ function HomeContent() {
             >
               <i className="fa fa-comments"></i>
               <span>Messages</span>
-              {hasNewChatMessage && <span className="notification-badge">•</span>}
+              {unreadCount > 0 && <span className="notification-badge">•</span>}
               <i className="fa fa-chevron-right"></i>
             </button>
 
@@ -730,6 +733,14 @@ function HomeContent() {
 
       {/* Category Section */}
       <section className="category-section">
+        <div className="category" onClick={() => router.push('/user-intetface/home?category=all')}>
+          <Image src="/home/lg.png"
+            alt="All Items"
+            className="category-icon"
+            width={100}
+            height={100} />
+          <p>All Items</p>
+        </div>
         <div className="category" onClick={() => router.push('/user-intetface/home?category=book')}>
           <Image
             src="/home/book.png"
@@ -886,8 +897,8 @@ function HomeContent() {
 
               <div className="product-info">
                 <h2>{product.title}</h2>
-                <p style={{ whiteSpace: 'pre-line' }}>{product.description}</p>
                 <div className="price">${product.price}</div>
+                <p style={{ whiteSpace: 'pre-line' }}>{product.description}</p>
                 <div className="product-buttons">
                   <button
                     className="product-btn primary-action"

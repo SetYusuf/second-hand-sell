@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "./user-intetface/notification/notification.css";
+import "./(marketplace)/notifications/notification.css";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { SocketProvider } from "./contexts/SocketContext";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,9 +43,12 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <LanguageProvider>
-            {children}
+            <SocketProvider>
+              {children}
+            </SocketProvider>
           </LanguageProvider>
         </ThemeProvider>
+
       </body>
     </html>
   );

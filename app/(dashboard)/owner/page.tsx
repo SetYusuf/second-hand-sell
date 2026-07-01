@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getStoredAuthToken } from '@/lib/auth-storage'
 
 interface OwnerStats {
   myPosts: number
@@ -25,7 +26,7 @@ export default function OwnerDashboard() {
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getStoredAuthToken()
       if (!token) {
         router.push('/login')
         return

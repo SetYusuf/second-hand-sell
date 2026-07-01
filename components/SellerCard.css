@@ -1,0 +1,170 @@
+/* ===== SellerCard component ===== */
+
+.seller-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+  width: 100%;
+}
+
+.seller-card--loading {
+  opacity: 0.7;
+}
+
+/* Avatar */
+.seller-card__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4caf50;
+  flex-shrink: 0;
+  background: #e0e0e0;
+}
+
+.seller-card__avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #555;
+  background: #e0e0e0;
+}
+
+/* Row layout (avatar + info) */
+.seller-card__row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.seller-card__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.seller-card__name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #111;
+  margin: 0;
+}
+
+.seller-card__username {
+  font-size: 0.85rem;
+  color: #777;
+  font-style: italic;
+}
+
+.seller-card__meta {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.15rem;
+}
+
+/* Actions */
+.seller-card__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.seller-card__btn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.seller-card__btn:hover {
+  opacity: 0.9;
+}
+
+.seller-card__btn:active {
+  transform: scale(0.98);
+}
+
+.seller-card__btn--profile {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+
+.seller-card__btn--chat {
+  background: #66bb6a;
+  color: #fff;
+}
+
+.seller-card__btn--friend {
+  background: #2196f3;
+  color: #fff;
+}
+
+/* ===== Header variant (profile page) ===== */
+.seller-card--header {
+  padding: 2rem;
+  text-align: left;
+}
+
+.seller-card--header .seller-card__avatar {
+  width: 120px;
+  height: 120px;
+  font-size: 3rem;
+}
+
+.seller-card__header-top {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.seller-card--header .seller-card__name {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+
+.seller-card--header .seller-card__username {
+  font-size: 1rem;
+}
+
+.seller-card--header .seller-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  color: #666;
+}
+
+.seller-card__bio {
+  margin-top: 0.75rem;
+  color: #444;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .seller-card--header {
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .seller-card__header-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .seller-card--header .seller-card__meta {
+    justify-content: center;
+  }
+}

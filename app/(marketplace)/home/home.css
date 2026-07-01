@@ -1565,28 +1565,33 @@ body {
 
 .product-card {
     background: #fff;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 .product-card.clickable:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
+/* Image occupies ~65% of the card for visual prominence */
 .product-image-container {
     position: relative;
     width: 100%;
-    height: 200px;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .product-image-container img {
@@ -1597,10 +1602,10 @@ body {
 
 .favorite-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
     border: none;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.9);
@@ -1610,7 +1615,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .favorite-btn:hover {
@@ -1619,7 +1624,7 @@ body {
 }
 
 .favorite-btn i {
-    font-size: 18px;
+    font-size: 14px;
     transition: color 0.3s ease;
 }
 
@@ -1631,53 +1636,71 @@ body {
     color: rgb(12, 132, 202);
 }
 
+/* Info section - compact with clear hierarchy */
 .product-info {
-    padding: 15px;
-    text-align: center;
+    padding: 12px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
 }
 
+/* Hierarchy: Title → Price → Description → Actions */
 .product-info h2 {
     color: #219dce;
-    font-size: 22px;
-    margin-bottom: 8px;
-}
-
-.product-info p {
-    font-size: 15px;
-    color: #444;
-    line-height: 1.5;
-    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 
 .product-info .price {
     color: #16a34a;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 18px;
+    margin: 0;
 }
 
+.product-info p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Action buttons - reduced height, supporting role */
 .product-info .product-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    margin-top: 10px;
-    padding: 10px 16px;
-    border-radius: 8px;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 6px;
     color: #fff;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     border: none;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 32px;
     white-space: nowrap;
 }
 
 .product-info .product-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
 .product-info .product-btn:active {
@@ -1688,7 +1711,7 @@ body {
 .product-buttons {
     display: flex;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: auto;
     flex-wrap: wrap;
     align-items: stretch;
 }
@@ -1698,12 +1721,11 @@ body {
     background: linear-gradient(135deg, #3B82F6, #2563EB);
     color: white;
     flex: 1;
-    min-width: 120px;
 }
 
 .product-info .primary-action:hover {
     background: linear-gradient(135deg, #2563EB, #1D4ED8);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.3);
 }
 
 /* Secondary Action Button - Green */
@@ -1711,12 +1733,11 @@ body {
     background: linear-gradient(135deg, #16A34A, #15803D);
     color: white;
     flex: 1;
-    min-width: 120px;
 }
 
 .product-info .secondary-action:hover {
     background: linear-gradient(135deg, #15803D, #166534);
-    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    box-shadow: 0 3px 8px rgba(22, 163, 74, 0.3);
 }
 
 /* Tertiary Action Button - Gray/Outline */
@@ -1724,38 +1745,32 @@ body {
     background: #F3F4F6;
     color: #374151;
     border: 1px solid #D1D5DB;
-    min-width: 80px;
 }
 
 .product-info .tertiary-action:hover {
     background: #E5E7EB;
     border-color: #9CA3AF;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive product buttons */
 @media (max-width: 768px) {
     .product-buttons {
-        flex-direction: column;
-        gap: 10px;
+        flex-direction: row;
+        gap: 8px;
     }
 
     .product-info .product-btn {
         width: 100%;
         text-align: center;
-        padding: 12px 16px;
-        font-size: 15px;
-        min-height: 48px;
-    }
-
-    .product-info .primary-action,
-    .product-info .secondary-action {
-        min-width: unset;
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 36px;
     }
 
     .product-info .tertiary-action {
         background: white;
-        border: 2px solid #E5E7EB;
+        border: 1px solid #E5E7EB;
     }
 
     .product-info .tertiary-action:hover {
@@ -1767,18 +1782,18 @@ body {
 
 @media (max-width: 480px) {
     .product-info .product-btn {
-        padding: 14px 16px;
-        font-size: 16px;
-        min-height: 52px;
-        border-radius: 12px;
+        padding: 8px 10px;
+        font-size: 12px;
+        min-height: 34px;
+        border-radius: 6px;
     }
 
     .product-buttons {
-        gap: 12px;
+        gap: 6px;
     }
 
     .product-info .product-btn i {
-        font-size: 16px;
+        font-size: 12px;
     }
 }
 

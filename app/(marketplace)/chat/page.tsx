@@ -1,43 +1,73 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useSocket } from '../../contexts/SocketContext';
+import { getStoredAuthToken, getStoredUserId } from '@/lib/auth-storage';
 import './chat.css';
+
+interface ConversationItem {
+  _id: string;
+  participant: {
+    id: string;
+    name: string;
+    avatar: string;
+  };
+  lastMessage: string;
+  lastMessageAt: string;
+  unreadCount: number;
+}
 
 export default function ChatPage() {
   const router = useRouter();
+  const { socket } = useSocket();
   const [searchQuery, setSearchQuery] = useState('');
-  const [likedChats, setLikedChats] = useState<Set<number>>(new Set([0, 3]));
+  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState('');
 
-  // Chat data model and dataset
-  interface ChatItem {
-    id: number;
-    name: string;
-    preview: string;
-    time: string;
-    avatar: string;
-  }
+  const fetchConversations = async () => {
+    try {
+      const token = getStoredAuthToken();
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+      const res = await fetch('/api/messages/conversations', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setConversations(data.conversations);
+      }
+    } catch (error) {
+      console.error('Failed to fetch conversations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const chats: ChatItem[] = [
-    { id: 0, name: 'Lina', preview: 'Hey bro, what are you doing? 😁', time: '11:45pm', avatar: '/notification-image/lina.png' },
-    { id: 1, name: 'Yusuf', preview: 'Bro, I finally finished setting up my PC last …', time: 'Sun', avatar: '/notification-image/bopa.png' },
-    { id: 2, name: 'Leakna', preview: 'Thanks again for helping me with my assig…', time: '23 Oct', avatar: '/notification-image/leakna.png' },
-    { id: 3, name: 'Somnag', preview: 'Hey, random question — do you believe ever …', time: '29 Oct', avatar: '/notification-image/somnang.png' },
-    { id: 4, name: 'Lina', preview: 'Can we meet tomorrow morning?', time: '10:12am', avatar: '/notification-image/lina.png' },
-    { id: 5, name: 'Lina', preview: 'Hey bro, what are you doing? 😁', time: '11:45pm', avatar: '/notification-image/lina.png' },
-    { id: 6, name: 'Bopa', preview: 'Bro, I finally finished setting up my PC last …', time: 'Sun', avatar: '/notification-image/bopa.png' },
-    { id: 7, name: 'Leakna', preview: 'Thanks again for helping me with my assig…', time: '23 Oct', avatar: '/notification-image/leakna.png' },
-    { id: 8, name: 'Somnag', preview: 'Hey, random question — do you believe ever …', time: '29 Oct', avatar: '/notification-image/somnang.png' },
-    { id: 9, name: 'Lina', preview: 'Can we meet tomorrow morning?', time: '10:12am', avatar: '/notification-image/lina.png' },
-    { id: 10, name: 'Lina', preview: 'Hey bro, what are you doing? 😁', time: '11:45pm', avatar: '/notification-image/lina.png' },
-    { id: 11, name: 'Bopa', preview: 'Bro, I finally finished setting up my PC last …', time: 'Sun', avatar: '/notification-image/bopa.png' },
-    { id: 12, name: 'Leakna', preview: 'Thanks again for helping me with my assig…', time: '23 Oct', avatar: '/notification-image/leakna.png' },
-    { id: 13, name: 'Somnag', preview: 'Hey, random question — do you believe ever …', time: '29 Oct', avatar: '/notification-image/somnang.png' },
-    { id: 14, name: 'Lina', preview: 'Can we meet tomorrow morning?', time: '10:12am', avatar: '/notification-image/lina.png' },
-  ];
+  useEffect(() => {
+    setCurrentUserId(getStoredUserId());
+    fetchConversations();
+  }, [fetchConversations]);
+
+  // Live update conversation list when a new message arrives
+  useEffect(() => {
+    if (!socket) return;
+    const handleNewMessage = () => {
+      fetchConversations();
+    };
+    socket.on('new_message', handleNewMessage);
+    socket.on('message_sent', handleNewMessage);
+    return () => {
+      socket.off('new_message', handleNewMessage);
+      socket.off('message_sent', handleNewMessage);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,23 +75,26 @@ export default function ChatPage() {
 
   const handleClearSearch = () => setSearchQuery('');
 
-  const toggleLike = (id: number) => {
-    setLikedChats((prev) => {
-      const next = new Set(prev);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
-
-  // Client-side search filter
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return chats;
-    return chats.filter(
-      (c) => c.name.toLowerCase().includes(q) || c.preview.toLowerCase().includes(q)
+    if (!q) return conversations;
+    return conversations.filter(
+      (c) =>
+        c.participant.name.toLowerCase().includes(q) ||
+        c.lastMessage.toLowerCase().includes(q)
     );
-  }, [chats, searchQuery]);
+  }, [conversations, searchQuery]);
+
+  const formatTime = (dateStr: string) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    if (isToday) {
+      return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
 
   return (
     <div className="chat-page">
@@ -100,7 +133,7 @@ export default function ChatPage() {
           <nav className="navbar-menu">
             <ul>
               <li>
-                <Link href="/chat" aria-label="Messages" title="Messages">
+                <Link href="/user-intetface/chat" aria-label="Messages" title="Messages">
                   <i className="fa fa-comments"></i>
                 </Link>
               </li>
@@ -110,7 +143,7 @@ export default function ChatPage() {
                 </Link>
               </li>
               <li>
-                <Link href="/login" aria-label="Login" title="Login">
+                <Link href="/user-intetface/profile" aria-label="Profile" title="Profile">
                   <i className="fa fa-user"></i>
                 </Link>
               </li>
@@ -121,32 +154,47 @@ export default function ChatPage() {
 
       <div className="chat-content-wrapper">
         <div className="chat-list">
-          {filtered.map((c) => (
-            <div
-              key={c.id}
-              className="chat-item"
-              onClick={() => router.push(`/user-intetface/inside-chat?name=${encodeURIComponent(c.name)}&avatar=${encodeURIComponent(c.avatar)}&msg=${encodeURIComponent(c.preview)}`)}
-            >
-              <div className="chat-avatar">
-                <Image src={c.avatar} alt={c.name} width={50} height={50} className="avatar-image" />
-              </div>
-              <div className="chat-info">
-                <div className="chat-header">
-                  <span className="chat-name">{c.name}</span>
-                  <span className="chat-time">{c.time}</span>
-                </div>
-                <div className="chat-preview">{c.preview}</div>
-              </div>
-              <button
-                className={`chat-heart ${likedChats.has(c.id) ? 'liked' : ''}`}
-                onClick={() => toggleLike(c.id)}
-                aria-label="Favorite"
-                type="button"
-              >
-                <i className="fa fa-heart"></i>
-              </button>
+          {loading ? (
+            <div style={{ padding: 24, textAlign: 'center', color: '#666' }}>Loading conversations...</div>
+          ) : filtered.length === 0 ? (
+            <div style={{ padding: 24, textAlign: 'center', color: '#666' }}>
+              No conversations yet. Start chatting with a seller!
             </div>
-          ))}
+          ) : (
+            filtered.map((c) => (
+              <div
+                key={c._id}
+                className={`chat-item ${currentUserId && c.participant.id === currentUserId ? 'active' : ''}`}
+                onClick={() =>
+                  router.push(
+                    `/user-intetface/inside-chat?conversationId=${c._id}&userId=${c.participant.id}&name=${encodeURIComponent(
+                      c.participant.name
+                    )}&avatar=${encodeURIComponent(c.participant.avatar || '/notification-image/lina.png')}`
+                  )
+                }
+              >
+                <div className="chat-avatar">
+                  <Image
+                    src={c.participant.avatar || '/notification-image/lina.png'}
+                    alt={c.participant.name}
+                    width={50}
+                    height={50}
+                    className="avatar-image"
+                  />
+                </div>
+                <div className="chat-info">
+                  <div className="chat-header">
+                    <span className="chat-name">{c.participant.name}</span>
+                    <span className="chat-time">{formatTime(c.lastMessageAt)}</span>
+                  </div>
+                  <div className="chat-preview">{c.lastMessage}</div>
+                </div>
+                {c.unreadCount > 0 && (
+                  <span className="chat-unread-badge">{c.unreadCount}</span>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDB } from '@/lib/db'
 import { verifyToken, getTokenFromRequest } from '@/lib/auth'
-import { ObjectId } from 'mongodb'
+import mongoose from 'mongoose'
 
 export async function GET(req: NextRequest) {
   try {
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     const users = db.collection('users')
 
     const dbUser = await users.findOne(
-      { _id: new ObjectId(user.userId) },
+      { _id: new mongoose.Types.ObjectId(user.userId) },
       { projection: { password: 0 } }
     )
 
@@ -89,7 +89,7 @@ export async function PUT(req: NextRequest) {
     if (body.avatar !== undefined) updateFields.avatar = body.avatar
 
     await users.updateOne(
-      { _id: new ObjectId(user.userId) },
+      { _id: new mongoose.Types.ObjectId(user.userId) },
       { $set: updateFields }
     )
 
