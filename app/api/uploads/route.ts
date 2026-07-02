@@ -20,15 +20,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'File too large' }, { status: 400 })
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
     // Create unique filename
     const ext = file.name.split('.').pop()
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
-    // Upload to Vercel Blob
-    const blob = await put(filename, new Uint8Array(buffer), { access: 'public' })
+    // Upload to Vercel Blob — pass the File object directly, no buffer conversion needed
+    const blob = await put(filename, file, { access: 'public' })
 
     return NextResponse.json({
       success: true,
@@ -43,4 +40,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Upload failed' }, { status: 500 })
   }
 }
-
