@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
     // Upload to Vercel Blob
-    const blob = await put(filename, buffer, { access: 'public' })
+    const blob = await put(filename, new Uint8Array(buffer), { access: 'public' })
 
     return NextResponse.json({
       success: true,
