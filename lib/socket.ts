@@ -1,24 +1,15 @@
-// Helper to emit Socket.io events from within API route handlers.
-// The Socket.io server instance is attached to `global.io` by server.js
-// when the app is started with `node server.js` (see package.json "dev"/"start").
-
-declare global {
-  // eslint-disable-next-line no-var
-  var io: import('socket.io').Server | undefined;
-}
+// LEGACY: Socket.io has been replaced with polling for chat delivery.
+// This function is kept as a no-op so any remaining imports don't break,
+// but it no longer does anything. Safe to remove entirely once you've
+// confirmed nothing imports emitToUser anymore.
 
 /**
- * Emit an event to a specific user's room (room name = userId).
- * Safe no-op if Socket.io isn't initialized (e.g. running plain `next dev`).
+ * No-op — Socket.io removed in favor of polling.
+ * Kept only so existing imports don't break the build.
  */
-export function emitToUser(userId: string, event: string, payload: unknown) {
-  try {
-    if (global.io) {
-      global.io.to(userId).emit(event, payload);
-    }
-  } catch (error) {
-    console.error('Socket emit error:', error);
-  }
+export function emitToUser(_userId: string, _event: string, _payload: unknown) {
+  // Intentionally does nothing. Chat now delivers via polling
+  // (GET /api/messages/:conversationId called on an interval).
 }
 
 export default emitToUser;
