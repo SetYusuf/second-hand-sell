@@ -76,7 +76,7 @@ const ProductSchema = new mongoose.Schema<IProduct>({
   contactPhone: { type: String, required: true },
   contactEmail: { type: String, required: true },
   imageUrl: { type: String, default: '' },
-  userId: { type: String, required: true },
+  userId: { type: String, required: true, index: true },
   status: { type: String, enum: ['active', 'removed', 'pending', 'rejected'], default: 'active' },
   featured: { type: Boolean, default: false },
   rejectReason: { type: String, default: '' },

@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useSocket } from '../../contexts/SocketContext';
 import { getStoredAuthToken, getStoredUserId } from '@/lib/auth-storage';
 import './chat.css';
 
@@ -22,11 +21,11 @@ interface ConversationItem {
 
 export default function ChatPage() {
   const router = useRouter();
-  const { socket } = useSocket();
   const [searchQuery, setSearchQuery] = useState('');
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState('');
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchConversations = async () => {
     try {
@@ -52,22 +51,18 @@ export default function ChatPage() {
   useEffect(() => {
     setCurrentUserId(getStoredUserId());
     fetchConversations();
-  }, [fetchConversations]);
 
-  // Live update conversation list when a new message arrives
-  useEffect(() => {
-    if (!socket) return;
-    const handleNewMessage = () => {
+    // Poll for new conversations every 4 seconds
+    pollIntervalRef.current = setInterval(() => {
       fetchConversations();
-    };
-    socket.on('new_message', handleNewMessage);
-    socket.on('message_sent', handleNewMessage);
+    }, 4000);
+
     return () => {
-      socket.off('new_message', handleNewMessage);
-      socket.off('message_sent', handleNewMessage);
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, []);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

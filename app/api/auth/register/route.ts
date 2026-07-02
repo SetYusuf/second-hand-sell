@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDB } from '@/lib/db'
+import { createRateLimiter, getClientIP, rateLimitResponse } from '@/lib/rate-limit'
 import bcrypt from 'bcryptjs'
 import { signToken } from '@/lib/auth'
 import mongoose from 'mongoose'
+
+// Rate limiter: max 5 attempts per minute per IP
+const registerLimiter = createRateLimiter({ maxRequests: 5, windowMs: 60 * 1000 })
 
 /**
  * POST /api/auth/register
@@ -10,6 +14,13 @@ import mongoose from 'mongoose'
  */
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting
+    const clientIP = getClientIP(req)
+    if (!registerLimiter(clientIP)) {
+      console.log(`⚠️ Rate limit exceeded for IP: ${clientIP}`)
+      return rateLimitResponse()
+    }
+
     console.log('🔄 Processing registration request...')
     
     // Get request body

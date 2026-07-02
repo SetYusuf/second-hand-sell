@@ -2,7 +2,13 @@ const mongoose = require('mongoose');
 
 async function detailedCheck() {
   try {
-    const MONGODB_URL = "mongodb+srv://set_yusuf_29:415GoRcS0lO5gbEL@cluster0.hktblwm.mongodb.net/?appName=Cluster0";
+    const MONGODB_URL = process.env.MONGODB_URL || 'mongodb+srv://<user>:<password>@cluster.mongodb.net/?appName=Cluster0';
+    
+    if (!process.env.MONGODB_URL) {
+      console.error('❌ MONGODB_URL environment variable is not set');
+      console.error('Please set MONGODB_URL in .env.local');
+      process.exit(1);
+    }
     
     await mongoose.connect(MONGODB_URL);
     

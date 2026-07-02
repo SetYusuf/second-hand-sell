@@ -23,18 +23,11 @@ if (!MONGODB_URL) {
   console.error('This means .env.local is not being loaded properly.');
   console.error('');
   console.error('FIX:');
-  console.error('1. Delete .env.local file');
-  console.error('2. Recreate it with PowerShell:');
-  console.error('   $content = @"');
-  console.error('   MONGODB_URL=mongodb+srv://second_hand_sell:Q90vymkK2DcKoUEU@cluster0.hktblwm.mongodb.net/second_hand_sell');
-  console.error('   MONGODB_DB=second_hand_sell');
-  console.error('   JWT_SECRET=your-secret');
-  console.error('   NEXT_PUBLIC_BASE_URL=http://localhost:7001');
-  console.error('   NODE_ENV=development');
-  console.error('   "@');
-  console.error('   $content | Out-File -FilePath ".env.local" -Encoding UTF8 -NoNewline');
-  console.error('3. Clear .next folder: Remove-Item .next -Recurse -Force');
-  console.error('4. Restart: npm run dev');
+  console.error('1. Verify .env.local exists in the project root');
+  console.error('2. Add MONGODB_URL=mongodb+srv://<user>:<password>@cluster.mongodb.net/dbname');
+  console.error('3. Add MONGODB_DB=your_database_name');
+  console.error('4. Clear .next folder: Remove-Item .next -Recurse -Force');
+  console.error('5. Restart: npm run dev');
   console.error('');
   
   throw new Error('MONGODB_URL not loaded from .env.local');

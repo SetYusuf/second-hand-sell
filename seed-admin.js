@@ -1,8 +1,14 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const MONGODB_URI = 'mongodb+srv://second_hand_sell:Q90vymkK2DcKoUEU@cluster0.hktblwm.mongodb.net/second_hand_sell';
-const DB_NAME = 'second_hand_sell';
+const MONGODB_URI = process.env.MONGODB_URL || 'mongodb+srv://<user>:<password>@cluster.mongodb.net/second_hand_sell';
+const DB_NAME = process.env.MONGODB_DB || 'second_hand_sell';
+
+if (!process.env.MONGODB_URL) {
+  console.error('❌ MONGODB_URL environment variable is not set');
+  console.error('Please set MONGODB_URL in .env.local');
+  process.exit(1);
+}
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
@@ -26,9 +32,9 @@ async function seedAdmin() {
     await mongoose.connect(MONGODB_URI, { dbName: DB_NAME });
     console.log('Connected to MongoDB');
 
-    const email = 'setyusuf12@gmail.com';
-    const password = '#Yu12345';
-    const name = 'Set Yusuf';
+    const email = 'admin@example.com';
+    const password = 'ChangeMe123!';
+    const name = 'Admin User';
 
     const existingUser = await User.findOne({ email: email.toLowerCase() });
 
@@ -55,7 +61,7 @@ async function seedAdmin() {
 
     console.log('\nAdmin credentials:');
     console.log('   Email:', email);
-    console.log('   Password:', password);
+    console.log('   Password: (set to secure password during production setup)');
     console.log('   Role: admin');
     console.log('\nLogin at: /login');
     console.log('   Will redirect to: /dashboardadmin');

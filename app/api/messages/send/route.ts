@@ -3,7 +3,6 @@ import { connectDB } from '@/lib/db'
 import { getDB } from '@/lib/db'
 import { Message, Conversation } from '@/lib/models'
 import { verifyToken, getTokenFromRequest } from '@/lib/auth'
-import { emitToUser } from '@/lib/socket'
 import mongoose from 'mongoose'
 
 
@@ -91,18 +90,8 @@ export async function POST(req: NextRequest) {
       sender: senderInfo,
     }
 
-    // Real-time delivery to receiver
-    emitToUser(receiverId, 'new_message', messagePayload)
-    // Update receiver's unread badge count in real-time
-    const conv = await Conversation.find({ participants: receiverId })
-    const totalUnread = conv.reduce((sum, c) => {
-      const uc = (c.unreadCount as Record<string, number>) || {}
-      return sum + (uc[receiverId] || 0)
-    }, 0)
-    emitToUser(receiverId, 'unread_count', { count: totalUnread })
-
-    // Echo back to sender's other sessions too (optional)
-    emitToUser(authUser.userId, 'message_sent', messagePayload)
+    // Message is saved to DB. The receiver's client will fetch it on next polling interval (3-4 seconds).
+    // No real-time socket emit needed.
 
     return NextResponse.json({ success: true, message: messagePayload, conversationId: conversation._id.toString() })
   } catch (error) {
@@ -110,3 +99,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
   }
 }
+

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/lib/db'
 import { Follow } from '@/lib/models'
 import { verifyToken, getTokenFromRequest } from '@/lib/auth'
-import { emitToUser } from '@/lib/socket'
 
 // POST /api/follow/:userId — follow a user
 export async function POST(
@@ -42,11 +41,8 @@ export async function POST(
       followingId: userId,
     })
 
-    // Notify the followed user in real-time
-    emitToUser(userId, 'new_follower', {
-      followerId: authUser.userId,
-      followerName: authUser.name,
-    })
+    // Follow recorded in database. The followed user will see the notification on next UI refresh.
+    // No real-time socket emit needed.
 
     return NextResponse.json({ success: true, isFollowing: true })
   } catch (error) {

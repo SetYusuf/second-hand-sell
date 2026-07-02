@@ -4,7 +4,6 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSocket } from '../../contexts/SocketContext';
 import '../chat/chat.css';
 import { getCurrentUserIdFromStorage, getProfileRouteForUser } from '@/lib/profile-utils';
 import { getStoredAuthToken } from '@/lib/auth-storage';
@@ -22,7 +21,6 @@ interface Message {
 function InsideChatContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { socket } = useSocket();
 
   const otherUserId = searchParams.get('userId') || '';
   const initialConversationId = searchParams.get('conversationId') || '';
@@ -37,6 +35,7 @@ function InsideChatContent() {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setCurrentUserId(getCurrentUserIdFromStorage());
@@ -79,26 +78,44 @@ function InsideChatContent() {
     }
   }, [initialConversationId, otherUserId, paramAvatar, paramName]);
 
-  // Listen for live incoming messages
+  // Poll for new messages every 3-4 seconds
   useEffect(() => {
-    if (!socket) return;
+    if (!conversationId) return;
 
-    const handleNewMessage = (msg: Message) => {
-      if (conversationId && msg.conversationId === conversationId) {
-        setMessages((prev) => [...prev, msg]);
-        setTimeout(scrollToBottom, 100);
-      } else if (!conversationId && msg.senderId === otherUserId) {
-        setConversationId(msg.conversationId);
-        setMessages((prev) => [...prev, msg]);
-        setTimeout(scrollToBottom, 100);
+    const pollMessages = async () => {
+      try {
+        const token = getStoredAuthToken();
+        const res = await fetch(`/api/messages/${conversationId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Compare with current messages to avoid duplicates
+          setMessages((prev) => {
+            const newMessages = data.messages.filter(
+              (newMsg: Message) => !prev.some((m) => m._id === newMsg._id)
+            );
+            if (newMessages.length > 0) {
+              setTimeout(scrollToBottom, 100);
+              return [...prev, ...newMessages];
+            }
+            return prev;
+          });
+        }
+      } catch (error) {
+        console.error('Failed to poll messages:', error);
       }
     };
 
-    socket.on('new_message', handleNewMessage);
+    // Initial load is done in loadConversation, so just set up polling
+    pollIntervalRef.current = setInterval(pollMessages, 3500);
+
     return () => {
-      socket.off('new_message', handleNewMessage);
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
     };
-  }, [socket, conversationId, otherUserId]);
+  }, [conversationId]);
 
   const handleSend = async () => {
     const trimmed = text.trim();

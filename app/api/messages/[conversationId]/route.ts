@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB, getDB } from '@/lib/db'
 import { Message, Conversation } from '@/lib/models'
 import { verifyToken, getTokenFromRequest } from '@/lib/auth'
-import { emitToUser } from '@/lib/socket'
 import mongoose from 'mongoose'
 
 // GET /api/messages/:conversationId — full message history, marks as read
@@ -52,17 +51,11 @@ export async function GET(
     conversation.unreadCount = unreadCount
     await conversation.save()
 
-    // Notify the other participant that their messages were read (optional, for read receipts)
-    const otherId = conversation.participants.find((p: string) => p !== authUser.userId)
-    if (otherId) {
-      emitToUser(otherId, 'messages_read', { conversationId, readBy: authUser.userId })
-    }
-
-    // Let this user's other sessions know their badge should reset for this conversation
-    emitToUser(authUser.userId, 'conversation_read', { conversationId })
+    // Note: Socket.io emits removed. The sender will see the read status on their next polling interval.
 
     // Fetch other participant's info
     const db = await getDB()
+    const otherId = conversation.participants.find((p: string) => p !== authUser.userId)
     let otherUser: { id: string; name: string; avatar: string } = { id: otherId || '', name: 'Unknown User', avatar: '' }
     if (db && otherId && mongoose.isValidObjectId(otherId)) {
       const userDoc = await db.collection('users').findOne(
@@ -92,3 +85,4 @@ export async function GET(
     return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 })
   }
 }
+
